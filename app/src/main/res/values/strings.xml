@@ -7,4 +7,7 @@
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
 
+
+    <string name="new_room_btn_text">New Room</string>
+    <string name="existing_room_btn_text">Existing Room</string>
 </resources>
