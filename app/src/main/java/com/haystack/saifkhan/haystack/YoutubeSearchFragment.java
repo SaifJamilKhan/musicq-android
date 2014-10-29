@@ -1,13 +1,19 @@
 package com.haystack.saifkhan.haystack;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,7 +42,71 @@ public class YoutubeSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_search, container, false);
         mHolder = new ViewHolder(rootView);
+        mHolder.searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                InitTask initTask = new InitTask();
+                initTask.execute(getActivity());
+
+
+            }
+        });
         return rootView;
+    }
+
+    protected class InitTask extends AsyncTask<Context, Integer, String> {
+        @Override
+        protected String doInBackground(Context... params) {
+            // Do the time comsuming task here
+
+
+            String response = "";
+            try {
+                response = YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
+                return response;
+            } catch (IOException e) {
+                response = "error";
+                e.printStackTrace();
+            }
+
+            return "null";
+        }
+
+        // -- gets called just before thread begins
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        // -- called from the publish progress
+        // -- notice that the datatype of the second param gets passed to this
+        // method
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+        }
+
+        // -- called if the cancel button is pressed
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+
+        // -- called as soon as doInBackground method completes
+        // -- notice that the third param gets passed to this method
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            final String printMe = result;
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), printMe, Toast.LENGTH_LONG).show();
+                }
+            });
+            // Show the toast message here
+        }
     }
 
     static class ViewHolder {
