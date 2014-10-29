@@ -4,16 +4,30 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class LoginActivity extends Activity {
+
+    @OnClick(R.id.login_btn)
+    public void onLoginPressed(View view) {
+        finish();
+    }
+
+    @OnClick(R.id.signup_button)
+    public void onSignupPressed(View view) {
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.inject(this);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
