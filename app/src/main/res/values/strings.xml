@@ -6,8 +6,13 @@
     <string name="action_settings">Settings</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
-
-
     <string name="new_room_btn_text">New Room</string>
     <string name="existing_room_btn_text">Existing Room</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_activity_delete_me">DeleteMe</string>
+    <string name="logout">Logout</string>
+
 </resources>
