@@ -45,8 +45,8 @@ public class YoutubeSearchFragment extends Fragment {
         mHolder.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InitTask initTask = new InitTask();
-                initTask.execute(getActivity());
+                YoutubeTask task = new YoutubeTask();
+                task.execute(getActivity());
 
 
             }
@@ -54,12 +54,10 @@ public class YoutubeSearchFragment extends Fragment {
         return rootView;
     }
 
-    protected class InitTask extends AsyncTask<Context, Integer, String> {
+    protected class YoutubeTask extends AsyncTask<Context, Integer, String> {
         @Override
         protected String doInBackground(Context... params) {
             // Do the time comsuming task here
-
-
             String response = "";
             try {
                 response = YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
@@ -72,7 +70,6 @@ public class YoutubeSearchFragment extends Fragment {
             return "null";
         }
 
-        // -- gets called just before thread begins
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
