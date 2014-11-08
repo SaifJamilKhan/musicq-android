@@ -8,6 +8,8 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.SearchResultSnippet;
+import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.haystack.saifkhan.haystack.Models.MusicQSong;
 
 import java.io.IOException;
@@ -50,7 +52,19 @@ public class YoutubeNetworkUtil {
             SearchResultSnippet snippet = result.getSnippet();
             song.setSnippet(snippet.getDescription());
             song.setTitle(snippet.getTitle());
-            song.setThumbnailURL(snippet.getThumbnails().getHigh().getUrl());
+            ThumbnailDetails thumbnailDetails = snippet.getThumbnails();
+            Thumbnail thumbnail = null;
+            if(thumbnailDetails.getHigh() != null) {
+                thumbnail = thumbnailDetails.getHigh();
+            } else if(thumbnailDetails.getMedium() != null) {
+                thumbnail = thumbnailDetails.getMedium();
+            } else {
+                thumbnail = thumbnailDetails.getDefault();
+            }
+
+            song.setThumbnailURL(thumbnail.getUrl());
+            song.setThumbnailHeight(thumbnail.getHeight());
+            song.setThumbnailWidth(thumbnail.getWidth());
             songs.add(song);
         }
 

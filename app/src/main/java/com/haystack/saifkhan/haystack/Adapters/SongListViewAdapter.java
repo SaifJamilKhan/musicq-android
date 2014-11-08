@@ -65,6 +65,8 @@ public class SongListViewAdapter extends BaseAdapter{
         MusicQSong song = (MusicQSong) getItem(i);
         holder.titleView.setText(song.getTitle());
         holder.descriptionView.setText(song.getSnippet());
+        holder.thumbnailImageView.setMinimumHeight(100);
+        holder.thumbnailImageView.setMinimumWidth(500);
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
         return view;
     }

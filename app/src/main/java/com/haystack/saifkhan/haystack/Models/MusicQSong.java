@@ -9,6 +9,8 @@ public class MusicQSong {
     private String snippet;
     private String title;
     private String thumbnailURL;
+    private Long thumbnailWidth;
+    private Long thumbnailHeight;
 
     public String getId() {
         return id;
@@ -48,5 +50,21 @@ public class MusicQSong {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Long getThumbnailHeight() {
+        return thumbnailHeight;
+    }
+
+    public void setThumbnailHeight(Long thumbnailHeight) {
+        this.thumbnailHeight = thumbnailHeight;
+    }
+
+    public Long getThumbnailWidth() {
+        return thumbnailWidth;
+    }
+
+    public void setThumbnailWidth(Long thumbnailWidth) {
+        this.thumbnailWidth = thumbnailWidth;
     }
 }
