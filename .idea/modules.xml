@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HayStack.iml" filepath="$PROJECT_DIR$/HayStack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MusicqAndroid.iml" filepath="$PROJECT_DIR$/MusicqAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

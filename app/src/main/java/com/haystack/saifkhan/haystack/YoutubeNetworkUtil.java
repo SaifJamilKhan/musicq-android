@@ -7,6 +7,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.SearchResultSnippet;
+import com.haystack.saifkhan.haystack.Models.MusicQSong;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class YoutubeNetworkUtil {
     private static String SEARCH = "/search";
     private static YouTube youtube;
 
-    public static String searchForVideosByTheName(String name) throws IOException {
+    public static List<MusicQSong> searchForVideosByTheName(String name) throws IOException {
         name = name.trim();
 
         youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
@@ -41,8 +43,17 @@ public class YoutubeNetworkUtil {
         listVideosRequest.setMaxResults((long) 10);
         SearchListResponse searchResponse = listVideosRequest.execute();
         List<SearchResult> searchResultList = searchResponse.getItems();
-        List<String> videoIds = new ArrayList<String>();
+        List<MusicQSong> songs = new ArrayList<MusicQSong>();
+        for(SearchResult result : searchResultList) {
+            MusicQSong song = new MusicQSong();
+            song.setYoutubeID(result.getId().getVideoId());
+            SearchResultSnippet snippet = result.getSnippet();
+            song.setSnippet(snippet.getDescription());
+            song.setTitle(snippet.getTitle());
+            song.setThumbnailURL(snippet.getThumbnails().getHigh().getUrl());
+            songs.add(song);
+        }
 
-        return "GOT " + videoIds.size();
+        return songs;
     }
 }

@@ -13,7 +13,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,6 +28,7 @@ public class YoutubeSearchFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private ViewHolder mHolder;
+    private SongListViewAdapter mSongAdapter;
 
     public static YoutubeSearchFragment newInstance(int sectionNumber) {
         YoutubeSearchFragment fragment = new YoutubeSearchFragment();
@@ -51,23 +55,25 @@ public class YoutubeSearchFragment extends Fragment {
 
             }
         });
+        mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity());
+        mHolder.youtubeListView.setAdapter(mSongAdapter);
         return rootView;
     }
 
-    protected class YoutubeTask extends AsyncTask<Context, Integer, String> {
+    protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {
         @Override
-        protected String doInBackground(Context... params) {
+        protected ArrayList doInBackground(Context... params) {
             // Do the time comsuming task here
-            String response = "";
+            ArrayList response;
             try {
-                response = YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
+                response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
                 return response;
             } catch (IOException e) {
-                response = "error";
+                response = null;
                 e.printStackTrace();
             }
 
-            return "null";
+            return response;
         }
 
         @Override
@@ -93,16 +99,24 @@ public class YoutubeSearchFragment extends Fragment {
         // -- called as soon as doInBackground method completes
         // -- notice that the third param gets passed to this method
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(final ArrayList result) {
             super.onPostExecute(result);
-            final String printMe = result;
+
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getActivity(), printMe, Toast.LENGTH_LONG).show();
+                    setSongs(result);
+                    Toast.makeText(getActivity(), "got it", Toast.LENGTH_LONG).show();
                 }
             });
             // Show the toast message here
+        }
+    }
+
+    private void setSongs(ArrayList result) {
+        if(result != null && mSongAdapter != null) {
+            mSongAdapter.setSongs(result);
+            mSongAdapter.notifyDataSetChanged();
         }
     }
 
