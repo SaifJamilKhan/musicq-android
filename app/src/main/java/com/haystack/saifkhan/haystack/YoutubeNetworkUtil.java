@@ -12,7 +12,19 @@ import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.haystack.saifkhan.haystack.Models.MusicQSong;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +34,7 @@ import java.util.List;
 public class YoutubeNetworkUtil {
 
     private static String BASE_YOUTUBE_URL_V3 = "https://www.googleapis.com/youtube/v3/";
+    private static String BASE_YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v=";
     private static String YOUTUBE_PLAYER_KEY = "AIzaSyDjwFylfhG-n4cpFITu952IXWFNS6FktpU";
     private static String YOUTUBE_API_KEY = "AIzaSyDTb4VB39ecxU9XXr5l-9C5Nn_d1d6UIpQ";
 
@@ -49,11 +62,12 @@ public class YoutubeNetworkUtil {
         for(SearchResult result : searchResultList) {
             MusicQSong song = new MusicQSong();
             song.setYoutubeID(result.getId().getVideoId());
+//            String html = getHTML(BASE_YOUTUBE_VIDEO_URL + song.getYoutubeID());
             SearchResultSnippet snippet = result.getSnippet();
             song.setSnippet(snippet.getDescription());
             song.setTitle(snippet.getTitle());
             ThumbnailDetails thumbnailDetails = snippet.getThumbnails();
-            Thumbnail thumbnail = null;
+            Thumbnail thumbnail;
             if(thumbnailDetails.getHigh() != null) {
                 thumbnail = thumbnailDetails.getHigh();
             } else if(thumbnailDetails.getMedium() != null) {
@@ -69,5 +83,26 @@ public class YoutubeNetworkUtil {
         }
 
         return songs;
+    }
+
+
+    private static String getHTML(String url) throws IOException {
+        HttpParams httpParameters = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParameters, 3000); // 3s max for connection
+        HttpConnectionParams.setSoTimeout(httpParameters, 4000); // 4s max to get data
+        HttpClient httpclient = new DefaultHttpClient(httpParameters); // Create HTTP Client
+        HttpGet httpget = new HttpGet(url); // Set the action you want to do
+        HttpResponse response = httpclient.execute(httpget); // Executeit
+        HttpEntity entity = response.getEntity();
+        InputStream is = entity.getContent(); // Create an InputStream with the response
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) // Read line by line
+            sb.append(line + "\n");
+
+        String resString = sb.toString(); // Result is here
+        is.close(); // Close the stream
+        return resString;
     }
 }
