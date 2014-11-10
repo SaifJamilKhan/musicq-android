@@ -1,4 +1,13 @@
 apply plugin: 'com.android.application'
+//
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:0.12.2'
+//    }
+//}
 
 android {
     compileSdkVersion 20
@@ -28,4 +37,7 @@ dependencies {
     compile 'com.android.support:support-v13:20.0.0'
     compile 'com.google.code.gson:gson:1.7.2'
     compile 'com.squareup.picasso:picasso:2.4.0'
+//    compile ('com.github.axet:vget:1.1.6') {
+//        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
+//    }
 }
