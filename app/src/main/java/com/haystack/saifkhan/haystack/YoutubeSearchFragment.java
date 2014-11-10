@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
 
@@ -108,7 +107,6 @@ public class YoutubeSearchFragment extends Fragment {
                 @Override
                 public void run() {
                     setSongs(result);
-                    Toast.makeText(getActivity(), "got it", Toast.LENGTH_LONG).show();
                 }
             });
             // Show the toast message here

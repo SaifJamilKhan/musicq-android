@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -33,11 +34,11 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by SaifKhan on 2014-11-08.
@@ -51,8 +52,19 @@ public class YoutubePlayerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_play, container, false);
         mHolder = new ViewHolder(rootView);
-        YoutubeTask task = new YoutubeTask();
-        task.execute(getActivity());
+        mHolder.loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=Jucredt5IWY");
+//                AppManagedDownload download = new AppManagedDownload();
+//                File file = new File("/Users/axet/Downloads");
+//                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
+            }
+        });
+//        YoutubeTask task = new YoutubeTask();
+//        task.execute(getActivity());
+
+
         return rootView;
     }
 
@@ -73,7 +85,9 @@ public class YoutubePlayerFragment extends Fragment {
 //                        "252Cid%252Cinitcwndbps%252Cip%252Cipbits%252Citag%252Ckeepalive%252Clmt%252Cmime%252Cmm%252Cms%252Cmv%252Csource%252Cupn%252Cexpire\\u0026init=0-" +
 //                        "712\\u0026fps=24\\u0026size=1920x1080,bitrate=2485836\\u0026lmt=1411500971562077\\u0026s=A36112B29F54D4271043CC521489DF61699D172D.86959C2C976150F0" +
 //                        "600C8C6C219009397E5AF20F0FF\\u0026type=video%2Fwebm%3B+codecs%3D%22vp9%22\\u0026itag=248\\u0026index=235-1247\\u0026clen=44181946\\u0026");
-                url = "www.google.com";
+//                url = "www.google.com";
+                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=4GuqB1BQVr4");
+
                 getMP4(url);
                 return null;
             } catch (Exception e) {
@@ -169,7 +183,6 @@ public class YoutubePlayerFragment extends Fragment {
 
     }
 
-
 //    http://stackoverflow.com/questions/15240011/get-the-download-url-for-youtube-video-android-java?lq=1
     class Meta {
         public String num;
@@ -229,12 +242,12 @@ public class YoutubePlayerFragment extends Fragment {
 
         // Parse the HTML response and extract the streaming URIs
         if (html.contains("verify-age-thumb")) {
-            CLog.w("YouTube is asking for age verification. We can't handle that sorry.");
+            Log.v("saif", "youtube is asking for age verification. We can't handle that sorry.");
             return null;
         }
 
         if (html.contains("das_captcha")) {
-            CLog.w("Captcha found, please try with different IP address.");
+            Log.v("saif", "youtube Captcha found, please try with different IP address.");
             return null;
         }
 
@@ -247,7 +260,7 @@ public class YoutubePlayerFragment extends Fragment {
         }
 
         if (matches.size() != 1) {
-//            Logger.v("saif""Found zero or too many stream maps.");
+            Log.v("saif", "youtube Found zero or too many stream maps.");
             return null;
         }
 
@@ -263,7 +276,7 @@ public class YoutubePlayerFragment extends Fragment {
                 itag = m1.group(1);
             }
 
-            Pattern p2 = Pattern.compile("sig=(.*?)[&]");
+            Pattern p2 = Pattern.compile("signature=(.*?)[&]");
             Matcher m2 = p2.matcher(url);
             String sig = null;
             if (m2.find()) {
@@ -284,7 +297,7 @@ public class YoutubePlayerFragment extends Fragment {
         }
 
         if (foundArray.size() == 0) {
-            CLog.w("Couldn't find any URLs and corresponding signatures");
+            Log.v("saif", "youtube Couldn't find any URLs and corresponding signatures");
             return null;
         }
 
@@ -313,7 +326,7 @@ public class YoutubePlayerFragment extends Fragment {
                 Video newVideo = new Video(meta.ext, meta.type,
                         foundArray.get(format));
                 videos.add(newVideo);
-                Log.v("youtube", "YouTube Video streaming details: ext:" + newVideo.ext
+                Log.v("youtube", "youTube Video streaming details: ext:" + newVideo.ext
                         + ", type:" + newVideo.type + ", url:" + newVideo.url);
             }
         }
@@ -377,13 +390,13 @@ public class YoutubePlayerFragment extends Fragment {
                             }
                         }
                     }
-
+                    getMP4(retVidUrl);
                     return retVidUrl;
                 }
             } catch (Exception e) {
                 Log.v("youtube", "youtube Couldn't get YouTube streaming URL", e);
             }
-            Log.v("youtube","Couldn't get stream URI for " + url);
+            Log.v("youtube", "Couldn't get stream URI for " + url);
             return null;
         }
 
@@ -392,6 +405,7 @@ public class YoutubePlayerFragment extends Fragment {
             super.onPostExecute(streamingUrl);
             progressDialog.dismiss();
             if (streamingUrl != null) {
+                Toast.makeText(getActivity(), "Got streming url" + streamingUrl, Toast.LENGTH_LONG).show();
                          /* Do what ever you want with streamUrl */
             }
         }
@@ -401,6 +415,8 @@ public class YoutubePlayerFragment extends Fragment {
 
 
     static class ViewHolder {
+        @InjectView(R.id.load_button)
+        Button loadButton;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
