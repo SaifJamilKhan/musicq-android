@@ -3,7 +3,7 @@ package com.haystack.saifkhan.haystack.Models;
 /**
  * Created by SaifKhan on 2014-11-08.
  */
-public class MusicQSong {
+public class MusicQSong extends MusicQBase {
     private String id;
     private String youtubeID;
     private String snippet;
