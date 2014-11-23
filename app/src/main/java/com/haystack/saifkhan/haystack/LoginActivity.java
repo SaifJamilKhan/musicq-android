@@ -3,11 +3,14 @@ package com.haystack.saifkhan.haystack;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 
 
@@ -20,8 +23,12 @@ public class LoginActivity extends Activity {
 
     @OnClick(R.id.signup_button)
     public void onSignupPressed(View view) {
-        goToEnterRoomActivity();
+        Intent myIntent = new Intent(LoginActivity.this, CreateAccountActivity.class);
+        startActivity(myIntent);
     }
+
+    @InjectView(R.id.logo)
+    ImageView logoImageView;
 
     private void goToEnterRoomActivity() {
         Intent myIntent = new Intent(LoginActivity.this, EnterRoomActivity.class);
@@ -34,6 +41,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
+
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotator);
+        logoImageView.startAnimation(animation);
     }
 
 //    @Override
