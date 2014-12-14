@@ -67,7 +67,7 @@ public class CreateAccountActivity extends Activity {
                             }
                         });
                         SharedPreferences sharedPreferences = getSharedPreferences(CreateAccountActivity.this.getPackageName(), MODE_PRIVATE);
-                        sharedPreferences.edit().putString("auth_token", user.authToken);
+                        sharedPreferences.edit().putString("auth_token", user.authToken).apply();
                         sharedPreferences.edit().putString("name", user.name).apply();
                         startMainActivity();
                     }

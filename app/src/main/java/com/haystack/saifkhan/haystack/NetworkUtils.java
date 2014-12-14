@@ -91,7 +91,7 @@ public class NetworkUtils {
                             String authToken = bodyJSON.getJSONObject("data").getString("auth_token");
                             String name = bodyJSON.getJSONObject("data").getString("name");
                             if (name != null && authToken != null) {
-                                mSharedPrefs.edit().putString("auth_token", authToken);
+                                mSharedPrefs.edit().putString("auth_token", authToken).apply();
                                 mSharedPrefs.edit().putString("name", name).apply();
                                 listener.didSucceed();
                                 return null;
