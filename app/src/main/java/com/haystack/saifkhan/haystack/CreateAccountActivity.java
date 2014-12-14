@@ -92,7 +92,7 @@ public class CreateAccountActivity extends Activity {
 
     private void startMainActivity() {
         Intent intent = new Intent(this, EnterRoomActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }

@@ -2,11 +2,15 @@ package com.haystack.saifkhan.haystack;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.StringUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,6 +46,14 @@ public class AccountActivity extends Activity {
         setContentView(R.layout.activity_account);
         ButterKnife.inject(this);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(this.getPackageName(), MODE_PRIVATE);
+        if(sharedPreferences.contains("auth_token")) {
+            String authToken = sharedPreferences.getString("auth_token", "");
+            if(!TextUtils.isEmpty(authToken)) {
+                goToEnterRoomActivity();
+                return;
+            }
+        }
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotator);
         logoImageView.startAnimation(animation);
     }
