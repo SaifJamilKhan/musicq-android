@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,7 @@ import android.os.Handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
+import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQUser;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -19,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Created by saifkhan on 14-11-23.
@@ -28,6 +30,7 @@ public class NetworkUtils {
     private static final String baseURL = "https://musicqtwo.herokuapp.com";
     private static final String registerationsPath = "/registrations";
     private static final String loginPath = "/sessions";
+    private static final String playlistPath = "/playlists";
 
     public abstract static class CreateAccountListener {
         public abstract void didCreateUser(MusicQUser user);
@@ -38,6 +41,7 @@ public class NetworkUtils {
 
     public abstract static class NetworkCallListener {
         public abstract void didSucceed();
+        public abstract void didSucceedWithJson(JSONObject body);
 
         public abstract void didFailWithMessage(String message);
 
@@ -54,15 +58,83 @@ public class NetworkUtils {
         new LoginTask(loginCall, listener, context).execute("");
     }
 
+    public static void createPlaylist(final MusicQPlayList playlistRequest, NetworkCallListener listener) {
+        new CreateObjectTask(playlistRequest, listener, playlistPath).execute("");
+    }
+
+    public static class CreateObjectTask extends AsyncTask<String, Void, String> {
+
+        private final Object requestObject;
+        private final NetworkCallListener listener;
+        private final String path;
+
+        public CreateObjectTask(Object requestObject, NetworkCallListener listener, String path) {
+            this.requestObject = requestObject;
+            this.listener = listener;
+            this.path = path;
+        }
+
+        protected String doInBackground(String... urls) {
+            try {
+
+                OkHttpClient client = new OkHttpClient();
+                Gson gson = new Gson();
+                RequestBody body = RequestBody.create(JSON, gson.toJson(requestObject));
+                Request request = new Request.Builder()
+                        .url(baseURL.concat(loginPath))
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "application/json")
+                        .post(body)
+                        .build();
+                Response response = client.newCall(request).execute();
+
+                if(response.code() >= 200 && response.code() < 300) {
+                    JSONObject bodyJSON = new JSONObject(response.body().string());
+                    listener.didSucceedWithJson(bodyJSON);
+                    return null;
+                }
+
+                switch (response.code()) {
+                    case 500:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                    case 401:
+                        JSONObject bodyJSON = new JSONObject(response.body().string());
+                        if(bodyJSON.has("error")) {
+                            listener.didFailWithMessage(bodyJSON.getString("error"));
+                        } else {
+                            listener.didFailWithMessage("Unknown error. Please try again");
+                        }
+                        break;
+                    default:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String feed) {
+        }
+    }
+
     public static class LoginTask extends AsyncTask<String, Void, String> {
 
 
-        private final MusicQLoginCall loginCall;
+        private final Object requestObject;
         private final NetworkCallListener listener;
         private final SharedPreferences mSharedPrefs;
 
-        public LoginTask(MusicQLoginCall loginCall, NetworkCallListener listener, Context context) {
-            this.loginCall = loginCall;
+        public LoginTask(Object requestObject, NetworkCallListener listener, Context context) {
+            this.requestObject = requestObject;
             this.listener = listener;
             mSharedPrefs = context.getSharedPreferences(
                     context.getPackageName(), Context.MODE_PRIVATE);
@@ -74,7 +146,7 @@ public class NetworkUtils {
                 OkHttpClient client = new OkHttpClient();
                 Gson gson = new Gson();
                 JSONObject userJSON = new JSONObject();
-                userJSON.put("user",  new JSONObject(gson.toJson(loginCall)));
+                userJSON.put("user",  new JSONObject(gson.toJson(requestObject)));
                 RequestBody body = RequestBody.create(JSON, userJSON.toString());
                 Request request = new Request.Builder()
                         .url(baseURL.concat(loginPath))

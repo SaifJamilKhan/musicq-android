@@ -11,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
+import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
+
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,6 +55,11 @@ public class LoginActivity extends Activity {
                                 launchMainActivity();
                             }
                         });
+                    }
+
+                    @Override
+                    public void didSucceedWithJson(JSONObject body) {
+
                     }
 
                     @Override

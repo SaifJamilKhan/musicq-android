@@ -22,4 +22,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_account">Create Account</string>
 
+
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="pin">Pin</string>
 </resources>
