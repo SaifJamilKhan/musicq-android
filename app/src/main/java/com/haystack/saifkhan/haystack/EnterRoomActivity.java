@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
+import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 
 import org.json.JSONException;
@@ -65,6 +66,7 @@ public class EnterRoomActivity extends Activity{
                     Gson gson = new Gson();
                     try {
                         MusicQPlayList playList = gson.fromJson(body.getJSONObject("data").getJSONObject("user").toString(), MusicQPlayList.class);
+                        DatabaseManager.getDatabaseManager().addObject(playList);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
