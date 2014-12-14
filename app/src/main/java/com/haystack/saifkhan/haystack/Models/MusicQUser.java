@@ -21,4 +21,7 @@ public class MusicQUser {
 
     @SerializedName("password_confirmation")
     public String passwordConfirmation;
+
+    @SerializedName("authentication_token")
+    public String authToken;
 }

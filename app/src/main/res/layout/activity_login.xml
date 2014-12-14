@@ -10,7 +10,7 @@
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/create_account_email_text"
+            android:id="@+id/login_email_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="saif@saif."
@@ -18,7 +18,7 @@
             android:inputType="textEmailAddress" />
 
         <EditText
-            android:id="@+id/create_account_password_text"
+            android:id="@+id/login_password_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="password"

@@ -1,6 +1,8 @@
 package com.haystack.saifkhan.haystack;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -36,8 +38,10 @@ public class CreateAccountActivity extends Activity {
     TextView passwordTxt;
 
     @InjectView(R.id.loading_spinner)
-    ImageView loadingSpinner;
+    View loadingSpinner;
 
+    @InjectView(R.id.loading_spinner_image_view)
+    View loadingSpinnerImageView;
 
     @OnClick(R.id.send_create_account_button)
     public void createAccountClicked() {
@@ -62,6 +66,10 @@ public class CreateAccountActivity extends Activity {
                                 stopSpinner();
                             }
                         });
+                        SharedPreferences sharedPreferences = getSharedPreferences(CreateAccountActivity.this.getPackageName(), MODE_PRIVATE);
+                        sharedPreferences.edit().putString("auth_token", user.authToken);
+                        sharedPreferences.edit().putString("name", user.name).apply();
+                        startMainActivity();
                     }
 
                     @Override
@@ -82,6 +90,13 @@ public class CreateAccountActivity extends Activity {
         }
     }
 
+    private void startMainActivity() {
+        Intent intent = new Intent(this, EnterRoomActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,13 +107,14 @@ public class CreateAccountActivity extends Activity {
     private void startSpinner() {
         loadingSpinner.setVisibility(View.VISIBLE);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.fast_rotator);
-        loadingSpinner.startAnimation(animation);
+        loadingSpinnerImageView.startAnimation(animation);
     }
 
     private void stopSpinner() {
         loadingSpinner.setVisibility(View.GONE);
-        loadingSpinner.clearAnimation();
+        loadingSpinnerImageView.clearAnimation();
     }
+
     private boolean validate() {
         return true;
     }
