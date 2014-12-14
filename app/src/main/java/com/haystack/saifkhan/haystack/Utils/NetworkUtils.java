@@ -10,16 +10,22 @@ import com.google.gson.GsonBuilder;
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQUser;
+import com.squareup.mimecraft.FormEncoding;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,6 +37,8 @@ public class NetworkUtils {
     private static final String registerationsPath = "/registrations";
     private static final String loginPath = "/sessions";
     private static final String playlistPath = "/playlists";
+    private static final String userAuthToken = "?user_token=";
+    //?user_token=TteKVCjYX-_bxvNo1HBt
 
     public abstract static class CreateAccountListener {
         public abstract void didCreateUser(MusicQUser user);
@@ -58,8 +66,8 @@ public class NetworkUtils {
         new LoginTask(loginCall, listener, context).execute("");
     }
 
-    public static void createPlaylist(final MusicQPlayList playlistRequest, NetworkCallListener listener) {
-        new CreateObjectTask(playlistRequest, listener, playlistPath).execute("");
+    public static void createPlaylist(final MusicQPlayList playlistRequest, NetworkCallListener listener, Context context) {
+        new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
     }
 
     public static class CreateObjectTask extends AsyncTask<String, Void, String> {
@@ -67,21 +75,31 @@ public class NetworkUtils {
         private final Object requestObject;
         private final NetworkCallListener listener;
         private final String path;
+        private final SharedPreferences sharedPreference;
 
-        public CreateObjectTask(Object requestObject, NetworkCallListener listener, String path) {
+        public CreateObjectTask(Object requestObject, NetworkCallListener listener, String path, Context context) {
             this.requestObject = requestObject;
             this.listener = listener;
             this.path = path;
+            //?user_token=TteKVCjYX-_bxvNo1HBt
+            this.sharedPreference = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         }
 
         protected String doInBackground(String... urls) {
             try {
 
                 OkHttpClient client = new OkHttpClient();
+                List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("user_token", sharedPreference.getString("auth_token", "")));
+                params.add(new BasicNameValuePair("user_email", sharedPreference.getString("email", "")));
+
+                String paramString = URLEncodedUtils.format(params, "utf-8");
+
                 Gson gson = new Gson();
                 RequestBody body = RequestBody.create(JSON, gson.toJson(requestObject));
                 Request request = new Request.Builder()
-                        .url(baseURL.concat(loginPath))
+                        .url(baseURL.concat(path + "?" + paramString))
                         .addHeader("Content-Type", "application/json")
                         .addHeader("Accept", "application/json")
                         .post(body)
@@ -162,9 +180,11 @@ public class NetworkUtils {
                         if(bodyJSON.getJSONObject("data").has("auth_token") && bodyJSON.getJSONObject("data").has("name")) {
                             String authToken = bodyJSON.getJSONObject("data").getString("auth_token");
                             String name = bodyJSON.getJSONObject("data").getString("name");
-                            if (name != null && authToken != null) {
+                            String email = bodyJSON.getJSONObject("data").getString("email");
+                            if (name != null && authToken != null && email != null) {
                                 mSharedPrefs.edit().putString("auth_token", authToken).apply();
                                 mSharedPrefs.edit().putString("name", name).apply();
+                                mSharedPrefs.edit().putString("email", email).apply();
                                 listener.didSucceed();
                                 return null;
                             }

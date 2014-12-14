@@ -2,6 +2,7 @@ package com.haystack.saifkhan.haystack;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -38,10 +39,10 @@ public class EnterRoomActivity extends Activity{
     EditText existingPlaylistDescription;
 
     @InjectView(R.id.loading_spinner)
-    private View loadingSpinner;
+    public View loadingSpinner;
 
     @InjectView(R.id.loading_spinner_image_view)
-    private View loadingSpinnerImageView;
+    public View loadingSpinnerImageView;
 
     @OnClick(R.id.existing_room_btn)
     public void onExistingPressed(View view) {
@@ -65,8 +66,23 @@ public class EnterRoomActivity extends Activity{
                 public void didSucceedWithJson(JSONObject body) {
                     Gson gson = new Gson();
                     try {
-                        MusicQPlayList playList = gson.fromJson(body.getJSONObject("data").getJSONObject("user").toString(), MusicQPlayList.class);
-                        DatabaseManager.getDatabaseManager().addObject(playList);
+                        MusicQPlayList playlist = gson.fromJson(body.getJSONObject("data").getJSONObject("user").toString(), MusicQPlayList.class);
+                        if(!TextUtils.isEmpty(playlist.id)) {
+                            DatabaseManager.getDatabaseManager().addObject(playlist);
+                            SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
+                            sharedPreferences.edit().putString("currentRoomID", playlist.id).apply();
+                            stopSpinner();
+                            goToMainActivity();
+                        } else {
+                            Handler mainHandler = new Handler(EnterRoomActivity.this.getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(EnterRoomActivity.this, "Failed to create", Toast.LENGTH_SHORT).show();
+                                    stopSpinner();
+                                }
+                            });
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -84,7 +100,7 @@ public class EnterRoomActivity extends Activity{
                         }
                     });
                 }
-            });
+            }, EnterRoomActivity.this);
         }
 
     }
