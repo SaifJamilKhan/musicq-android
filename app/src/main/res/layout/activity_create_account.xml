@@ -53,6 +53,7 @@
         android:textColor="#FFFFFF"
         android:textSize="30sp" />
 
-    <!--<include layout="@layout/loading_spinner" />-->
+
+    <include layout="@layout/loading_spinner" />
 
 </RelativeLayout>

@@ -55,7 +55,7 @@ public class YoutubePlayerFragment extends Fragment {
         mHolder.loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=Jucredt5IWY");
+                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=ocGKSFzLYvM");
 //                AppManagedDownload download = new AppManagedDownload();
 //                File file = new File("/Users/axet/Downloads");
 //                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
@@ -86,7 +86,7 @@ public class YoutubePlayerFragment extends Fragment {
 //                        "712\\u0026fps=24\\u0026size=1920x1080,bitrate=2485836\\u0026lmt=1411500971562077\\u0026s=A36112B29F54D4271043CC521489DF61699D172D.86959C2C976150F0" +
 //                        "600C8C6C219009397E5AF20F0FF\\u0026type=video%2Fwebm%3B+codecs%3D%22vp9%22\\u0026itag=248\\u0026index=235-1247\\u0026clen=44181946\\u0026");
 //                url = "www.google.com";
-                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=4GuqB1BQVr4");
+                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=N9ZPfjYYKAc");
 
                 getMP4(url);
                 return null;
@@ -281,6 +281,12 @@ public class YoutubePlayerFragment extends Fragment {
             String sig = null;
             if (m2.find()) {
                 sig = m2.group(1);
+            } else {
+                Pattern p3 = Pattern.compile("sig=(.*?)[&]");
+                Matcher m3 = p3.matcher(url);
+                if(m3.find()) {
+                    sig = m3.group(1);
+                }
             }
 
             Pattern p3 = Pattern.compile("url=(.*?)[&]");

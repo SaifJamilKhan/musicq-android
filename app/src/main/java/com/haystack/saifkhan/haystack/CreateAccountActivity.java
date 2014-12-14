@@ -3,6 +3,10 @@ package com.haystack.saifkhan.haystack;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,9 @@ public class CreateAccountActivity extends Activity {
     @InjectView(R.id.create_account_password_text)
     TextView passwordTxt;
 
+    @InjectView(R.id.loading_spinner)
+    ImageView loadingSpinner;
+
 
     @OnClick(R.id.send_create_account_button)
     public void createAccountClicked() {
@@ -40,6 +47,7 @@ public class CreateAccountActivity extends Activity {
             user.email = emailTxt.getText().toString();
             user.password = passwordTxt.getText().toString();
             user.passwordConfirmation = passwordConfirmTxt.getText().toString();
+            startSpinner();
 
             try {
                 NetworkUtils.createAccountCall(user, new NetworkUtils.CreateAccountListener() {
@@ -51,6 +59,7 @@ public class CreateAccountActivity extends Activity {
                             @Override
                             public void run() {
                                 Toast.makeText(CreateAccountActivity.this, "Created user with id " + user.id, Toast.LENGTH_LONG).show();
+                                stopSpinner();
                             }
                         });
                     }
@@ -62,6 +71,7 @@ public class CreateAccountActivity extends Activity {
                             @Override
                             public void run() {
                                 Toast.makeText(CreateAccountActivity.this, message, Toast.LENGTH_SHORT).show();
+                                stopSpinner();
                             }
                         });
                     }
@@ -72,10 +82,6 @@ public class CreateAccountActivity extends Activity {
         }
     }
 
-    private boolean validate() {
-        return true;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,4 +89,17 @@ public class CreateAccountActivity extends Activity {
         ButterKnife.inject(this);
     }
 
+    private void startSpinner() {
+        loadingSpinner.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.fast_rotator);
+        loadingSpinner.startAnimation(animation);
+    }
+
+    private void stopSpinner() {
+        loadingSpinner.setVisibility(View.GONE);
+        loadingSpinner.clearAnimation();
+    }
+    private boolean validate() {
+        return true;
+    }
 }
