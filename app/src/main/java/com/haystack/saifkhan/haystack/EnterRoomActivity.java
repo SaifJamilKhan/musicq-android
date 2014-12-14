@@ -66,13 +66,20 @@ public class EnterRoomActivity extends Activity{
                 public void didSucceedWithJson(JSONObject body) {
                     Gson gson = new Gson();
                     try {
-                        MusicQPlayList playlist = gson.fromJson(body.getJSONObject("data").getJSONObject("user").toString(), MusicQPlayList.class);
+                        final MusicQPlayList playlist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);
                         if(!TextUtils.isEmpty(playlist.id)) {
                             DatabaseManager.getDatabaseManager().addObject(playlist);
                             SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
                             sharedPreferences.edit().putString("currentRoomID", playlist.id).apply();
-                            stopSpinner();
-                            goToMainActivity();
+                            Handler mainHandler = new Handler(EnterRoomActivity.this.getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    stopSpinner();
+                                    Toast.makeText(EnterRoomActivity.this, "Creates playlist with id " + playlist.id, Toast.LENGTH_SHORT).show();
+                                    goToMainActivity();
+                                }
+                            });
                         } else {
                             Handler mainHandler = new Handler(EnterRoomActivity.this.getMainLooper());
                             mainHandler.post(new Runnable() {
