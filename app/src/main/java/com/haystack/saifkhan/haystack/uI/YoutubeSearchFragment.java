@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
+import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.YoutubeNetworkUtil;
 
 import java.io.IOException;
@@ -65,7 +66,6 @@ public class YoutubeSearchFragment extends Fragment {
     protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {
         @Override
         protected ArrayList doInBackground(Context... params) {
-            // Do the time comsuming task here
             ArrayList response;
             try {
                 response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
@@ -84,22 +84,15 @@ public class YoutubeSearchFragment extends Fragment {
 
         }
 
-        // -- called from the publish progress
-        // -- notice that the datatype of the second param gets passed to this
-        // method
         @Override
         protected void onProgressUpdate(Integer... values) {
 
         }
-
-        // -- called if the cancel button is pressed
         @Override
         protected void onCancelled() {
             super.onCancelled();
         }
 
-        // -- called as soon as doInBackground method completes
-        // -- notice that the third param gets passed to this method
         @Override
         protected void onPostExecute(final ArrayList result) {
             super.onPostExecute(result);
@@ -110,7 +103,6 @@ public class YoutubeSearchFragment extends Fragment {
                     setSongs(result);
                 }
             });
-            // Show the toast message here
         }
     }
 

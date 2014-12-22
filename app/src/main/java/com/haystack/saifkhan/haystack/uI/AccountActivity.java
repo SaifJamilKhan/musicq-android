@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.google.api.client.repackaged.org.apache.commons.codec.binary.StringUtils;
+import com.haystack.saifkhan.haystack.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

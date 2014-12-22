@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MusicqAndroid.iml" filepath="$PROJECT_DIR$/MusicqAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/musicq-android.iml" filepath="$PROJECT_DIR$/musicq-android.iml" />
     </modules>
   </component>
 </project>

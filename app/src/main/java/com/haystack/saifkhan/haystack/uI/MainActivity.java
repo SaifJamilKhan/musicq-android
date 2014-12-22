@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.haystack.saifkhan.haystack.R;
 
 import java.util.Locale;
 

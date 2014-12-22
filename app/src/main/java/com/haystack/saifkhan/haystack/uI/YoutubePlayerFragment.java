@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.haystack.saifkhan.haystack.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

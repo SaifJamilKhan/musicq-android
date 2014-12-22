@@ -1,4 +1,4 @@
-package com.haystack.saifkhan.haystack;
+package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
+import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 
@@ -70,7 +71,7 @@ public class EnterRoomActivity extends Activity{
                         if(!TextUtils.isEmpty(playlist.id)) {
                             DatabaseManager.getDatabaseManager().addObject(playlist);
                             SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
-                            sharedPreferences.edit().putString("currentRoomID", playlist.id).apply();
+                            sharedPreferences.edit().putString("currentPlaylistID", playlist.id).apply();
                             Handler mainHandler = new Handler(EnterRoomActivity.this.getMainLooper());
                             mainHandler.post(new Runnable() {
                                 @Override
