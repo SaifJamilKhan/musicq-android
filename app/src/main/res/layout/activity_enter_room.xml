@@ -56,8 +56,22 @@
                 android:text="@string/existing_room_btn_text"
                 android:textColor="@android:color/black" />
 
+            <TextView
+                android:text="@string/recents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!--Dynamically add recents-->
+            <LinearLayout
+                android:id="@+id/recents_list"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
 
         </LinearLayout>
+
 
         <include layout="@layout/loading_spinner" />
     </FrameLayout>

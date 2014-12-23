@@ -1,15 +1,21 @@
 package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -21,9 +27,12 @@ import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 /**
  * Created by saifkhan on 2014-10-28.
@@ -41,6 +50,9 @@ public class EnterRoomActivity extends Activity{
 
     @InjectView(R.id.loading_spinner)
     public View loadingSpinner;
+
+    @InjectView(R.id.recents_list)
+    public LinearLayout recentsList;
 
     @InjectView(R.id.loading_spinner_image_view)
     public View loadingSpinnerImageView;
@@ -78,6 +90,7 @@ public class EnterRoomActivity extends Activity{
                                 public void run() {
                                     stopSpinner();
                                     Toast.makeText(EnterRoomActivity.this, "Creates playlist with id " + playlist.id, Toast.LENGTH_SHORT).show();
+                                    DatabaseManager.getDatabaseManager().addObject(playlist);
                                     goToMainActivity();
                                 }
                             });
@@ -113,6 +126,68 @@ public class EnterRoomActivity extends Activity{
 
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_enter_room);
+        ButterKnife.inject(this);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        NetworkUtils.getAllPlaylists(new NetworkUtils.NetworkCallListener() {
+            @Override
+            public void didSucceed() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPlaylistsFromDatabase();
+                    }
+                });
+            }
+
+            @Override
+            public void didSucceedWithJson(JSONObject body) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPlaylistsFromDatabase();
+                    }
+                });
+            }
+
+            @Override
+            public void didFailWithMessage(String message) {
+                Timber.e(message);
+
+            }
+        }, this);
+        return super.onCreateView(name, context, attrs);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadPlaylistsFromDatabase();
+    }
+
+    private void loadPlaylistsFromDatabase() {
+        HashMap<String, MusicQPlayList> playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+        if ((playlists != null && playlists.size() > 0) && recentsList.getChildCount() != playlists.size()) {
+            recentsList.removeAllViews();
+            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService
+                    (Context.LAYOUT_INFLATER_SERVICE);
+            for (MusicQPlayList playList : playlists.values()) {
+                View view = inflater.inflate(R.layout.playlist_cell, null);
+                recentsList.addView(view);
+                PlaylistCellViewHolder holder = new PlaylistCellViewHolder(view);
+                holder.playlistName.setText(playList.name);
+                holder.playlistDescription.setText(playList.id.concat(" ") + playList.description);
+            }
+        }
+    }
+
     private boolean validateCreateCall() {
         if(TextUtils.isEmpty(playlistName.getText().toString())) {
             Toast.makeText(EnterRoomActivity.this, "Please Enter name", Toast.LENGTH_SHORT).show();
@@ -137,10 +212,18 @@ public class EnterRoomActivity extends Activity{
         startActivity(myIntent);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_room);
-        ButterKnife.inject(this);
+    public static class PlaylistCellViewHolder {
+
+        @InjectView(R.id.name_text_view)
+        TextView playlistName;
+
+        @InjectView(R.id.description_text_view)
+        TextView playlistDescription;
+
+        public PlaylistCellViewHolder (View view){
+            ButterKnife.inject(this, view);
+        }
     }
+
+
 }

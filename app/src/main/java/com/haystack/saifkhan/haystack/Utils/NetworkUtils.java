@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQUser;
+import com.haystack.saifkhan.haystack.R;
 import com.squareup.mimecraft.FormEncoding;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -20,6 +23,7 @@ import com.squareup.okhttp.Response;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +31,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import timber.log.Timber;
 
 /**
  * Created by saifkhan on 14-11-23.
@@ -50,9 +56,7 @@ public class NetworkUtils {
     public abstract static class NetworkCallListener {
         public abstract void didSucceed();
         public abstract void didSucceedWithJson(JSONObject body);
-
         public abstract void didFailWithMessage(String message);
-
     }
 
     public static final MediaType JSON
@@ -69,6 +73,115 @@ public class NetworkUtils {
     public static void createPlaylist(final MusicQPlayList playlistRequest, NetworkCallListener listener, Context context) {
         new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
     }
+
+    public static void getAllPlaylists(final NetworkCallListener listener, final Context context) {
+        new GetListTask(new NetworkCallListener() {
+            @Override
+            public void didSucceed() {
+                listener.didFailWithMessage(context.getString(R.string.error));
+            }
+
+            @Override
+            public void didSucceedWithJson(JSONObject body) {
+                Gson gson = new Gson();
+                try {
+
+                    JSONArray playlistJSONArray = body.getJSONArray("playlists");
+                    for (int x = 0; x < playlistJSONArray.length(); x++) {
+                        JSONObject object = playlistJSONArray.getJSONObject(x);
+
+                        final MusicQPlayList playlist = gson.fromJson(object.toString(), MusicQPlayList.class);
+                        if (!TextUtils.isEmpty(playlist.id)) {
+                            DatabaseManager.getDatabaseManager().addObject(playlist);
+                        } else {
+                            Timber.v("");
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                listener.didSucceed();
+            }
+
+            @Override
+            public void didFailWithMessage(String message) {
+                listener.didFailWithMessage(message);
+            }
+        }, playlistPath, context).execute("");
+    }
+
+    public static class GetListTask extends AsyncTask<String, Void, String> {
+
+        private final NetworkCallListener listener;
+        private final String path;
+        private final SharedPreferences sharedPreference;
+
+        public GetListTask(NetworkCallListener listener, String path, Context context) {
+            this.listener = listener;
+            this.path = path;
+            this.sharedPreference = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        }
+
+        protected String doInBackground(String... urls) {
+            try {
+
+                OkHttpClient client = new OkHttpClient();
+                List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("user_token", sharedPreference.getString("auth_token", "")));
+                params.add(new BasicNameValuePair("user_email", sharedPreference.getString("email", "")));
+
+                String paramString = URLEncodedUtils.format(params, "utf-8");
+
+                Request request = new Request.Builder()
+                        .url(baseURL.concat(path + "?" + paramString))
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "application/json")
+                        .get()
+                        .build();
+                Response response = client.newCall(request).execute();
+
+                if(response.code() >= 200 && response.code() < 300) {
+                    JSONObject bodyJSON = new JSONObject(response.body().string());
+                    listener.didSucceedWithJson(bodyJSON);
+                    return null;
+                }
+
+                switch (response.code()) {
+                    case 500:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                    case 401:
+                        JSONObject bodyJSON = new JSONObject(response.body().string());
+                        if(bodyJSON.has("error")) {
+                            listener.didFailWithMessage(bodyJSON.getString("error"));
+                        } else {
+                            listener.didFailWithMessage("Unknown error. Please try again");
+                        }
+                        break;
+                    default:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String feed) {
+        }
+    }
+
+
+
 
     public static class CreateObjectTask extends AsyncTask<String, Void, String> {
 

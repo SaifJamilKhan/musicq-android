@@ -29,22 +29,27 @@ public class DatabaseManager {
        if(mHashmaps == null) {
            mHashmaps = new HashMap<String, HashMap<String, MusicQBase> >();
        }
-       return mHashmaps.get(objectClass.getName());
+       return getObjectHashmap(objectClass);
     }
 
     public void addObject(MusicQBase object) {
         if(mHashmaps == null) {
             mHashmaps = new HashMap<String, HashMap<String, MusicQBase> >();
         }
-        HashMap<String, MusicQBase> objectHashMap = mHashmaps.get(object.getClass().toString());
-
-        if(objectHashMap == null) {
-            objectHashMap = new HashMap<String, MusicQBase> ();
-            mHashmaps.put(object.getClass().toString(), objectHashMap);
-        }
+        HashMap<String, MusicQBase> objectHashMap = getObjectHashmap(object.getClass());
         if(!TextUtils.isEmpty(object.id)) {
             objectHashMap.put(object.id, object);
         }
+    }
+
+    private HashMap<String, MusicQBase> getObjectHashmap(Class classOfObject) {
+        HashMap<String, MusicQBase> objectHashMap = mHashmaps.get(classOfObject.toString());
+
+        if(objectHashMap == null) {
+            objectHashMap = new HashMap<String, MusicQBase> ();
+            mHashmaps.put(classOfObject.toString(), objectHashMap);
+        }
+        return objectHashMap;
     }
 
 

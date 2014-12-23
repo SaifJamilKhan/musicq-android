@@ -26,4 +26,6 @@
     <string name="name">Name</string>
     <string name="description">Description</string>
     <string name="pin">Pin</string>
+    <string name="recents">Recents</string>
+    <string name="error">Error</string>
 </resources>
