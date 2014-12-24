@@ -15,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
@@ -59,6 +61,8 @@ public class YoutubePlayerFragment extends Fragment {
     private ViewHolder mHolder;
     private MusicQPlayList mPlaylist;
 
+    private SongListViewAdapter mSongAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,6 +78,9 @@ public class YoutubePlayerFragment extends Fragment {
 //                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
             }
         });
+
+        mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity());
+        mHolder.songListView.setAdapter(mSongAdapter);
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
 
@@ -95,6 +102,13 @@ public class YoutubePlayerFragment extends Fragment {
                 Gson gson = new Gson();
                 try {
                     mPlaylist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);
+                    mSongAdapter.setSongs(mPlaylist.songs);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSongAdapter.notifyDataSetChanged();
+                        }
+                    });
                     Timber.v("loaded playlist with id " + mPlaylist.id);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -467,6 +481,9 @@ public class YoutubePlayerFragment extends Fragment {
     static class ViewHolder {
         @InjectView(R.id.load_button)
         Button loadButton;
+
+        @InjectView(R.id.songs_list_view)
+        ListView songListView;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
