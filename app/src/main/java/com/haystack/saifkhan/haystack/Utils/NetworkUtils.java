@@ -89,7 +89,7 @@ public class NetworkUtils {
     }
 
     public static void showPlaylist(String id, final NetworkCallListener listener, Context context) {
-        new CreateObjectTask(id, listener, videoPath, context).execute("");
+        new ShowObjectTask(id, listener, playlistPath, context).execute("");
     }
 
     public static void getAllPlaylists(final NetworkCallListener listener, final Context context) {
