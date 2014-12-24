@@ -1,5 +1,8 @@
 package com.haystack.saifkhan.haystack.Utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -41,7 +44,7 @@ public class YoutubeNetworkUtil {
     private static String SEARCH = "/search";
     private static YouTube youtube;
 
-    public static List<MusicQSong> searchForVideosByTheName(String name) throws IOException {
+    public static List<MusicQSong> searchForVideosByTheName(String name, Context context) throws IOException {
         name = name.trim();
 
         youtube = new YouTube.Builder(new NetHttpTransport(), new JacksonFactory(), new HttpRequestInitializer() {
@@ -58,6 +61,8 @@ public class YoutubeNetworkUtil {
         listVideosRequest.setMaxResults((long) 10);
         SearchListResponse searchResponse = listVideosRequest.execute();
         List<SearchResult> searchResultList = searchResponse.getItems();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        String playlistID = sharedPreferences.getString("currentPlaylistID", "");
         List<MusicQSong> songs = new ArrayList<MusicQSong>();
         for(SearchResult result : searchResultList) {
             MusicQSong song = new MusicQSong();
@@ -77,8 +82,10 @@ public class YoutubeNetworkUtil {
             }
 
             song.setThumbnailURL(thumbnail.getUrl());
-            song.setThumbnailHeight(thumbnail.getHeight());
-            song.setThumbnailWidth(thumbnail.getWidth());
+            song.setThumbnailHeight((thumbnail.getHeight() != null) ? thumbnail.getHeight().intValue() : null);
+            song.setThumbnailWidth((thumbnail.getWidth() != null) ? thumbnail.getWidth().intValue() : null);
+            song.videoType = "youtube";
+            song.playlistID = playlistID;
             songs.add(song);
         }
 
