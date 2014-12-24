@@ -3,11 +3,13 @@ package com.haystack.saifkhan.haystack.uI;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +17,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.R;
+import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
+import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,6 +49,7 @@ import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * Created by SaifKhan on 2014-11-08.
@@ -48,6 +57,7 @@ import butterknife.InjectView;
 public class YoutubePlayerFragment extends Fragment {
 
     private ViewHolder mHolder;
+    private MusicQPlayList mPlaylist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +67,8 @@ public class YoutubePlayerFragment extends Fragment {
         mHolder.loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=ocGKSFzLYvM");
+                syncCurrentPlaylist();
+//                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=ocGKSFzLYvM");
 //                AppManagedDownload download = new AppManagedDownload();
 //                File file = new File("/Users/axet/Downloads");
 //                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
@@ -70,6 +81,37 @@ public class YoutubePlayerFragment extends Fragment {
         return rootView;
     }
 
+    private void syncCurrentPlaylist() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+
+        NetworkUtils.showPlaylist(sharedPreferences.getString("currentPlaylistID", ""), new NetworkUtils.NetworkCallListener() {
+            @Override
+            public void didSucceed() {
+                stopSpinner();
+            }
+
+            @Override
+            public void didSucceedWithJson(JSONObject body) {
+                Gson gson = new Gson();
+                try {
+                    mPlaylist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);
+                    Timber.v("loaded playlist with id " + mPlaylist.id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                stopSpinner();
+            }
+
+            @Override
+            public void didFailWithMessage(String message) {
+                stopSpinner();
+            }
+        }, getActivity());
+    }
+
+    private void stopSpinner() {
+
+    }
 
 
     protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {

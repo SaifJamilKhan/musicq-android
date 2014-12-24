@@ -8,13 +8,18 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
+import com.haystack.saifkhan.haystack.Models.MusicQSong;
 import com.haystack.saifkhan.haystack.R;
+import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 import com.haystack.saifkhan.haystack.Utils.YoutubeNetworkUtil;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +65,33 @@ public class YoutubeSearchFragment extends Fragment {
             mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity());
         }
         mHolder.youtubeListView.setAdapter(mSongAdapter);
+        mHolder.youtubeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MusicQSong song = (MusicQSong) mSongAdapter.getItem(i);
+                addSong(song);
+            }
+        });
         return rootView;
+    }
+
+    private void addSong(MusicQSong song) {
+        NetworkUtils.createVideo(song, new NetworkUtils.NetworkCallListener() {
+            @Override
+            public void didSucceed() {
+
+            }
+
+            @Override
+            public void didSucceedWithJson(JSONObject body) {
+
+            }
+
+            @Override
+            public void didFailWithMessage(String message) {
+
+            }
+        }, getActivity());
     }
 
     protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {
@@ -68,7 +99,7 @@ public class YoutubeSearchFragment extends Fragment {
         protected ArrayList doInBackground(Context... params) {
             ArrayList response;
             try {
-                response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString());
+                response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString(), getActivity());
                 return response;
             } catch (IOException e) {
                 response = null;
