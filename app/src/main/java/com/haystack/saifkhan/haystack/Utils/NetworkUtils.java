@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
+import com.haystack.saifkhan.haystack.Models.MusicQSong;
 import com.haystack.saifkhan.haystack.Models.MusicQUser;
 import com.haystack.saifkhan.haystack.R;
 import com.squareup.mimecraft.FormEncoding;
@@ -83,10 +84,13 @@ public class NetworkUtils {
         new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
     }
 
-    public static void createVideo(final Mus playlistRequest, NetworkCallListener listener, Context context) {
-        new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
+    public static void createVideo(final MusicQSong songRequest, NetworkCallListener listener, Context context) {
+        new CreateObjectTask(songRequest, listener, videoPath, context).execute("");
     }
 
+    public static void showPlaylist(String id, final NetworkCallListener listener, Context context) {
+        new CreateObjectTask(id, listener, videoPath, context).execute("");
+    }
 
     public static void getAllPlaylists(final NetworkCallListener listener, final Context context) {
         new GetListTask(new NetworkCallListener() {
@@ -97,20 +101,6 @@ public class NetworkUtils {
 
             @Override
             public void didSucceedWithJson(JSONObject body) {
-//                GsonBuilder gsonBuilder = new GsonBuilder();
-//                gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-//                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'", Locale.ENGLISH);
-//                    @Override
-//                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-//                        try{
-//                            return df.parse(json.getAsString());
-//                        }
-//                        catch(ParseException ex){
-//                            return null;
-//                        }
-//                    }
-//                });
-
                 Gson gson = new Gson();
                 try {
 
@@ -208,9 +198,6 @@ public class NetworkUtils {
         }
     }
 
-
-
-
     public static class CreateObjectTask extends AsyncTask<String, Void, String> {
 
         private final Object requestObject;
@@ -284,6 +271,79 @@ public class NetworkUtils {
         protected void onPostExecute(String feed) {
         }
     }
+
+    public static class ShowObjectTask extends AsyncTask<String, Void, String> {
+
+        private final String requestID;
+        private final NetworkCallListener listener;
+        private final String path;
+        private final SharedPreferences sharedPreference;
+
+        public ShowObjectTask(String requestID, NetworkCallListener listener, String path, Context context) {
+            this.requestID = requestID;
+            this.listener = listener;
+            this.path = path;
+            //?user_token=TteKVCjYX-_bxvNo1HBt
+            this.sharedPreference = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        }
+
+        protected String doInBackground(String... urls) {
+            try {
+
+                OkHttpClient client = new OkHttpClient();
+                List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("user_token", sharedPreference.getString("auth_token", "")));
+                params.add(new BasicNameValuePair("user_email", sharedPreference.getString("email", "")));
+
+                String paramString = URLEncodedUtils.format(params, "utf-8");
+
+                Request request = new Request.Builder()
+                        .url(baseURL.concat(path + "/" + requestID + "?" + paramString))
+                        .addHeader("Content-Type", "application/json")
+                        .addHeader("Accept", "application/json")
+                        .get()
+                        .build();
+                Response response = client.newCall(request).execute();
+
+                if(response.code() >= 200 && response.code() < 300) {
+                    JSONObject bodyJSON = new JSONObject(response.body().string());
+                    listener.didSucceedWithJson(bodyJSON);
+                    return null;
+                }
+
+                switch (response.code()) {
+                    case 500:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                    case 401:
+                        JSONObject bodyJSON = new JSONObject(response.body().string());
+                        if(bodyJSON.has("error")) {
+                            listener.didFailWithMessage(bodyJSON.getString("error"));
+                        } else {
+                            listener.didFailWithMessage("Unknown error. Please try again");
+                        }
+                        break;
+                    default:
+                        listener.didFailWithMessage("Unknown error. Please try again");
+                        break;
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                listener.didFailWithMessage("Unknown error. Please try again");
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String feed) {
+        }
+    }
+
 
     public static class LoginTask extends AsyncTask<String, Void, String> {
 
