@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQUser;
@@ -28,8 +32,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import timber.log.Timber;
@@ -43,8 +53,7 @@ public class NetworkUtils {
     private static final String registerationsPath = "/registrations";
     private static final String loginPath = "/sessions";
     private static final String playlistPath = "/playlists";
-    private static final String userAuthToken = "?user_token=";
-    //?user_token=TteKVCjYX-_bxvNo1HBt
+    private static final String videoPath = "/videos";
 
     public abstract static class CreateAccountListener {
         public abstract void didCreateUser(MusicQUser user);
@@ -74,6 +83,11 @@ public class NetworkUtils {
         new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
     }
 
+    public static void createVideo(final Mus playlistRequest, NetworkCallListener listener, Context context) {
+        new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
+    }
+
+
     public static void getAllPlaylists(final NetworkCallListener listener, final Context context) {
         new GetListTask(new NetworkCallListener() {
             @Override
@@ -83,6 +97,20 @@ public class NetworkUtils {
 
             @Override
             public void didSucceedWithJson(JSONObject body) {
+//                GsonBuilder gsonBuilder = new GsonBuilder();
+//                gsonBuilder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+//                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'", Locale.ENGLISH);
+//                    @Override
+//                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+//                        try{
+//                            return df.parse(json.getAsString());
+//                        }
+//                        catch(ParseException ex){
+//                            return null;
+//                        }
+//                    }
+//                });
+
                 Gson gson = new Gson();
                 try {
 

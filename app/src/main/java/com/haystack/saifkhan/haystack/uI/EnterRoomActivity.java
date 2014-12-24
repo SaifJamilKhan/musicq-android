@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
@@ -77,6 +78,9 @@ public class EnterRoomActivity extends Activity{
 
                 @Override
                 public void didSucceedWithJson(JSONObject body) {
+//                    Gson gson = new GsonBuilder()
+//                            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+//                            .create();
                     Gson gson = new Gson();
                     try {
                         final MusicQPlayList playlist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);

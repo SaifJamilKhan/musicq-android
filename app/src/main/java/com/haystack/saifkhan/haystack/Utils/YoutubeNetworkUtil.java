@@ -61,7 +61,7 @@ public class YoutubeNetworkUtil {
         List<MusicQSong> songs = new ArrayList<MusicQSong>();
         for(SearchResult result : searchResultList) {
             MusicQSong song = new MusicQSong();
-            song.setYoutubeID(result.getId().getVideoId());
+            song.setSourceID(result.getId().getVideoId());
 //            String html = getHTML(BASE_YOUTUBE_VIDEO_URL + song.getYoutubeID());
             SearchResultSnippet snippet = result.getSnippet();
             song.setSnippet(snippet.getDescription());
