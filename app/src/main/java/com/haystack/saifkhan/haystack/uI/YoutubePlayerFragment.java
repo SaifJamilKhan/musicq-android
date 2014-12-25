@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
+import com.haystack.saifkhan.haystack.Models.MusicQSong;
 import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
@@ -62,6 +63,11 @@ public class YoutubePlayerFragment extends Fragment {
     private MusicQPlayList mPlaylist;
 
     private SongListViewAdapter mSongAdapter;
+    private QueuePlayControlsListener mPlayControlsListener;
+
+    public static interface QueuePlayControlsListener {
+        public void didPressPlay(MusicQSong song);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +84,14 @@ public class YoutubePlayerFragment extends Fragment {
 //                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
             }
         });
-
+        mHolder.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mHolder.songListView.getCount() > 0) {
+                    mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(0));
+                }
+            }
+        });
         mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
         mHolder.songListView.setAdapter(mSongAdapter);
 //        YoutubeTask task = new YoutubeTask();
@@ -121,6 +134,10 @@ public class YoutubePlayerFragment extends Fragment {
                 stopSpinner();
             }
         }, getActivity());
+    }
+
+    public void setPlayControlsListener(QueuePlayControlsListener listener) {
+        mPlayControlsListener = listener;
     }
 
     private void stopSpinner() {
@@ -191,10 +208,6 @@ public class YoutubePlayerFragment extends Fragment {
             // Show the toast message here
         }
     }
-
-
-
-
 
     private void getMP4(String url){
         URL u = null;
@@ -485,6 +498,8 @@ public class YoutubePlayerFragment extends Fragment {
         @InjectView(R.id.songs_list_view)
         ListView songListView;
 
+        @InjectView(R.id.play_button)
+        Button playButton;
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }

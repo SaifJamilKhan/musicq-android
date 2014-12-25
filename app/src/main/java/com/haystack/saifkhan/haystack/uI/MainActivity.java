@@ -13,22 +13,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.haystack.saifkhan.haystack.Models.MusicQSong;
 import com.haystack.saifkhan.haystack.R;
+import com.haystack.saifkhan.haystack.Utils.YoutubeNetworkUtil;
 
 import java.util.Locale;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
-public class MainActivity extends Activity {
+
+public class MainActivity extends Activity implements YoutubePlayerFragment.QueuePlayControlsListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
+
+    @InjectView(R.id.pager)
     ViewPager mViewPager;
+    private YouTubePlayerFragment youtubeFragment;
+    private YouTubePlayer mYoutubePlayer;
+    private YoutubePlayerFragment mYoutubePlayerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
+        setTitle("Playlist 2");
+        youtubeFragment =  (YouTubePlayerFragment) getFragmentManager()
+                .findFragmentById(R.id.youtube_fragment);
+        youtubeFragment.initialize(YoutubeNetworkUtil.YOUTUBE_PLAYER_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+               mYoutubePlayer = youTubePlayer;
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
+            }
+        });
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
@@ -48,6 +75,13 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void didPressPlay(MusicQSong song) {
+        if(mYoutubePlayer != null) {
+            mYoutubePlayer.loadVideo(song.getSourceID());
+        }
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -59,7 +93,11 @@ public class MainActivity extends Activity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0) {
-                return new YoutubePlayerFragment();
+                if(mYoutubePlayerFragment == null) {
+                    mYoutubePlayerFragment = new YoutubePlayerFragment();
+                    mYoutubePlayerFragment.setPlayControlsListener(MainActivity.this);
+                }
+                return mYoutubePlayerFragment;
             }
             else if(position == 1) {
                 return YoutubeSearchFragment.newInstance(2);

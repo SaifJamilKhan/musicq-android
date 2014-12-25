@@ -38,7 +38,7 @@ public class YoutubeNetworkUtil {
 
     private static String BASE_YOUTUBE_URL_V3 = "https://www.googleapis.com/youtube/v3/";
     private static String BASE_YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v=";
-    private static String YOUTUBE_PLAYER_KEY = "AIzaSyDjwFylfhG-n4cpFITu952IXWFNS6FktpU";
+    public static String YOUTUBE_PLAYER_KEY = "AIzaSyDjwFylfhG-n4cpFITu952IXWFNS6FktpU";
     private static String YOUTUBE_API_KEY = "AIzaSyDTb4VB39ecxU9XXr5l-9C5Nn_d1d6UIpQ";
 
     private static String SEARCH = "/search";
