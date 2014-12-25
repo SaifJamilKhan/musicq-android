@@ -46,9 +46,6 @@ public class EnterRoomActivity extends Activity{
     @InjectView(R.id.playlist_description)
     EditText playlistDescription;
 
-    @InjectView(R.id.existing_playlist_pin)
-    EditText existingPlaylistDescription;
-
     @InjectView(R.id.loading_spinner)
     public View loadingSpinner;
 
@@ -58,9 +55,19 @@ public class EnterRoomActivity extends Activity{
     @InjectView(R.id.loading_spinner_image_view)
     public View loadingSpinnerImageView;
 
+    @InjectView(R.id.existing_playlist_pin)
+    TextView existingPlaylistPin;
+
     @OnClick(R.id.existing_room_btn)
     public void onExistingPressed(View view) {
-        goToMainActivity();
+        final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(existingPlaylistPin.getText().toString());
+        if(playlist != null && !TextUtils.isEmpty(playlist.id)) {
+            SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
+            sharedPreferences.edit().putString("currentPlaylistID", playlist.id).apply();
+            goToMainActivity();
+        } else {
+            Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + existingPlaylistPin.getText().toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.new_room_btn)
@@ -78,9 +85,6 @@ public class EnterRoomActivity extends Activity{
 
                 @Override
                 public void didSucceedWithJson(JSONObject body) {
-//                    Gson gson = new GsonBuilder()
-//                            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-//                            .create();
                     Gson gson = new Gson();
                     try {
                         final MusicQPlayList playlist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);

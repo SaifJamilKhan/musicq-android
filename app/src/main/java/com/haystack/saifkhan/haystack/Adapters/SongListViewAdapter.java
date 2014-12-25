@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import butterknife.InjectView;
 public class SongListViewAdapter extends BaseAdapter{
 
     private final Context mContext;
+    private final boolean mShouldEnableAdding;
     private ArrayList<MusicQSong> mSongs;
     private LayoutInflater mLayoutInflater;
 
@@ -30,10 +32,11 @@ public class SongListViewAdapter extends BaseAdapter{
         mSongs = songs;
     }
 
-    public SongListViewAdapter(LayoutInflater inflater, Context context) {
+    public SongListViewAdapter(LayoutInflater inflater, Context context, boolean shouldEnableAdding) {
         mSongs = new ArrayList<MusicQSong>();
         mLayoutInflater = inflater;
         mContext = context;
+        mShouldEnableAdding = shouldEnableAdding;
     }
 
     @Override
@@ -67,6 +70,7 @@ public class SongListViewAdapter extends BaseAdapter{
         holder.descriptionView.setText(song.getSnippet());
         holder.thumbnailImageView.setMinimumHeight(100);
         holder.thumbnailImageView.setMinimumWidth(500);
+        holder.addSongTextview.setVisibility(mShouldEnableAdding ? View.VISIBLE : View.GONE);
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
         return view;
     }
@@ -80,6 +84,9 @@ public class SongListViewAdapter extends BaseAdapter{
 
         @InjectView(R.id.thumbnailImageView)
         ImageView thumbnailImageView;
+
+        @InjectView(R.id.addSongButton)
+        TextView addSongTextview;
 
 
         public SongViewHolder(View view) {

@@ -79,7 +79,7 @@ public class YoutubePlayerFragment extends Fragment {
             }
         });
 
-        mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity());
+        mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
         mHolder.songListView.setAdapter(mSongAdapter);
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
