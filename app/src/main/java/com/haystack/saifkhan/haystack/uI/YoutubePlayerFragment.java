@@ -85,20 +85,14 @@ public class YoutubePlayerFragment extends Fragment {
 //                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
             }
         });
-        mHolder.playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mHolder.songListView.getCount() > 0) {
-                    mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(0));
-                }
-            }
-        });
         mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
         mHolder.songListView.setAdapter(mSongAdapter);
         mHolder.songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(i));
+                mSongAdapter.setCurrentQueItem(i);
+                mSongAdapter.notifyDataSetChanged();
             }
         });
 //        YoutubeTask task = new YoutubeTask();
@@ -106,6 +100,12 @@ public class YoutubePlayerFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        syncCurrentPlaylist();
     }
 
     private void syncCurrentPlaylist() {
@@ -505,8 +505,6 @@ public class YoutubePlayerFragment extends Fragment {
         @InjectView(R.id.songs_list_view)
         ListView songListView;
 
-        @InjectView(R.id.play_button)
-        Button playButton;
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
