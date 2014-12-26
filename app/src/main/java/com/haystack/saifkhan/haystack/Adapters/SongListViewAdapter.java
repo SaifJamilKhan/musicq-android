@@ -27,6 +27,7 @@ public class SongListViewAdapter extends BaseAdapter{
     private final boolean mShouldEnableAdding;
     private ArrayList<MusicQSong> mSongs;
     private LayoutInflater mLayoutInflater;
+    private Integer mCurrentPlayingSong;
 
     public void setSongs(ArrayList<MusicQSong> songs) {
         mSongs = songs;
@@ -71,8 +72,21 @@ public class SongListViewAdapter extends BaseAdapter{
         holder.thumbnailImageView.setMinimumHeight(100);
         holder.thumbnailImageView.setMinimumWidth(500);
         holder.addSongTextview.setVisibility(mShouldEnableAdding ? View.VISIBLE : View.GONE);
+        if(mCurrentPlayingSong != null) {
+            if (i == mCurrentPlayingSong) {
+                view.setBackgroundResource(R.color.current_playing_song);
+            } else if (i < mCurrentPlayingSong) {
+                view.setBackgroundResource(R.color.already_played_song);
+            } else {
+                view.setBackgroundResource(R.color.upcoming_song);
+            }
+        }
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
         return view;
+    }
+
+    public void setCurrentQueItem(Integer i) {
+        mCurrentPlayingSong = i;
     }
 
     public static class SongViewHolder {
