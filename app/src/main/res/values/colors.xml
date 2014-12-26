@@ -7,4 +7,9 @@
     <item name="already_played_song" type="color">#CCCCCC</item>
     <item name="upcoming_song" type="color">#FFFFFF</item>
 
+    <color name="refresh_progress_1">#FFB2B2</color>
+    <color name="refresh_progress_2">#FF4D4D</color>
+    <color name="refresh_progress_3">#FF0000</color>
+    <color name="refresh_progress_4">#990000</color>
+
 </resources>

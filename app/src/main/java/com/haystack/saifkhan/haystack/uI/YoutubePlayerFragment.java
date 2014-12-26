@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,16 +76,6 @@ public class YoutubePlayerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_play, container, false);
         mHolder = new ViewHolder(rootView);
-        mHolder.loadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                syncCurrentPlaylist();
-//                new YouTubePageStreamUriGetter().execute("https://www.youtube.com/watch?v=ocGKSFzLYvM");
-//                AppManagedDownload download = new AppManagedDownload();
-//                File file = new File("/Users/axet/Downloads");
-//                download.run("https://www.youtube.com/watch?v=4GuqB1BQVr4", file);
-            }
-        });
         mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
         mHolder.songListView.setAdapter(mSongAdapter);
         mHolder.songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,6 +86,21 @@ public class YoutubePlayerFragment extends Fragment {
                 mSongAdapter.notifyDataSetChanged();
             }
         });
+
+        mHolder.swipeRefreshLayout.setColorSchemeResources(
+                R.color.refresh_progress_1,
+                R.color.refresh_progress_2,
+                R.color.refresh_progress_3,
+                R.color.refresh_progress_4);
+
+        mHolder.swipeRefreshLayout.setListView(mHolder.songListView);
+        mHolder.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                syncCurrentPlaylist();
+            }
+        });
+
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
 
@@ -127,6 +133,7 @@ public class YoutubePlayerFragment extends Fragment {
                         @Override
                         public void run() {
                             mSongAdapter.notifyDataSetChanged();
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
                         }
                     });
                     Timber.v("loaded playlist with id " + mPlaylist.id);
@@ -137,8 +144,14 @@ public class YoutubePlayerFragment extends Fragment {
             }
 
             @Override
-            public void didFailWithMessage(String message) {
-                stopSpinner();
+            public void didFailWithMessage(final String message) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHolder.swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }, getActivity());
     }
@@ -499,11 +512,12 @@ public class YoutubePlayerFragment extends Fragment {
 
 
     static class ViewHolder {
-        @InjectView(R.id.load_button)
-        Button loadButton;
 
         @InjectView(R.id.songs_list_view)
         ListView songListView;
+
+        @InjectView(R.id.swipe_refresh)
+        ListviewSwipeRefreshLayout swipeRefreshLayout;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
