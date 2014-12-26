@@ -158,8 +158,13 @@ public class NetworkUtils {
                         .addHeader("Accept", "application/json")
                         .get()
                         .build();
-                Response response = client.newCall(request).execute();
-
+                Response response;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (Exception e) {
+                    listener.didFailWithMessage("No internet?");
+                    return null;
+                }
                 if(response.code() >= 200 && response.code() < 300) {
                     JSONObject bodyJSON = new JSONObject(response.body().string());
                     listener.didSucceedWithJson(bodyJSON);
@@ -232,8 +237,13 @@ public class NetworkUtils {
                         .addHeader("Accept", "application/json")
                         .post(body)
                         .build();
-                Response response = client.newCall(request).execute();
-
+                Response response;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (Exception e) {
+                    listener.didFailWithMessage("No internet?");
+                    return null;
+                }
                 if(response.code() >= 200 && response.code() < 300) {
                     JSONObject bodyJSON = new JSONObject(response.body().string());
                     listener.didSucceedWithJson(bodyJSON);
@@ -304,7 +314,13 @@ public class NetworkUtils {
                         .addHeader("Accept", "application/json")
                         .get()
                         .build();
-                Response response = client.newCall(request).execute();
+                Response response;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (Exception e) {
+                    listener.didFailWithMessage("No internet?");
+                    return null;
+                }
 
                 if(response.code() >= 200 && response.code() < 300) {
                     JSONObject bodyJSON = new JSONObject(response.body().string());
@@ -373,8 +389,13 @@ public class NetworkUtils {
                         .addHeader("Accept", "application/json")
                         .post(body)
                         .build();
-                Response response = client.newCall(request).execute();
-
+                Response response;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (Exception e) {
+                    listener.didFailWithMessage("No internet?");
+                    return null;
+                }
                 if(response.code() >= 200 && response.code() < 300) {
                     JSONObject bodyJSON = new JSONObject(response.body().string());
                     if(bodyJSON.has("data")) {
@@ -453,8 +474,13 @@ public class NetworkUtils {
                         .addHeader("Accept", "application/json")
                         .post(body)
                         .build();
-                Response response = client.newCall(request).execute();
-
+                Response response;
+                try {
+                    response = client.newCall(request).execute();
+                } catch (Exception e) {
+                    listener.didFailWithMessage("No internet?");
+                    return null;
+                }
                 if(response.code() >= 200 && response.code() < 300) {
                     JSONObject bodyJSON = new JSONObject(response.body().string());
 
