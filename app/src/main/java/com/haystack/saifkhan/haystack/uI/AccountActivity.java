@@ -19,10 +19,13 @@ import android.widget.VideoView;
 import android.widget.ViewFlipper;
 
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
+import com.haystack.saifkhan.haystack.Models.MusicQUser;
 import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,12 +40,6 @@ public class AccountActivity extends Activity {
     @InjectView(R.id.login_password_text)
     public TextView passwordTextView;
 
-
-    @InjectView(R.id.loading_spinner)
-    public View loadingSpinner;
-
-    @InjectView(R.id.loading_spinner_image_view)
-    public  ImageView loadingSpinnerImageView;
 
     @InjectView(R.id.background_video_view)
     VideoView backgroundVideoView;
@@ -104,6 +101,69 @@ public class AccountActivity extends Activity {
         }
     }
 
+    @InjectView(R.id.create_account_user_name_text)
+    TextView userNameTxt;
+
+    @InjectView(R.id.create_account_email_text)
+    TextView emailTxt;
+
+    @InjectView(R.id.create_account_password_confirm_text)
+    TextView passwordConfirmTxt;
+
+    @InjectView(R.id.create_account_password_text)
+    TextView passwordTxt;
+
+    @InjectView(R.id.loading_spinner)
+    View loadingSpinner;
+
+    @InjectView(R.id.loading_spinner_image_view)
+    View loadingSpinnerImageView;
+
+    @OnClick(R.id.send_create_account_button)
+    public void createAccountClicked() {
+            MusicQUser user = new MusicQUser();
+            user.name = userNameTxt.getText().toString();
+            user.email = emailTxt.getText().toString();
+            user.password = passwordTxt.getText().toString();
+            user.passwordConfirmation = passwordConfirmTxt.getText().toString();
+            startSpinner();
+
+            try {
+                NetworkUtils.createAccountCall(user, new NetworkUtils.CreateAccountListener() {
+                    @Override
+                    public void didCreateUser(final MusicQUser user) {
+
+                        Handler mainHandler = new Handler(AccountActivity.this.getMainLooper());
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(AccountActivity.this, "Created user with id " + user.id, Toast.LENGTH_LONG).show();
+                                stopSpinner();
+                            }
+                        });
+                        SharedPreferences sharedPreferences = getSharedPreferences(AccountActivity.this.getPackageName(), MODE_PRIVATE);
+                        sharedPreferences.edit().putString("auth_token", user.authToken).apply();
+                        sharedPreferences.edit().putString("name", user.name).apply();
+                        sharedPreferences.edit().putString("email", user.email).apply();
+                        goToEnterRoomActivity();
+                    }
+
+                    @Override
+                    public void didFailWithMessage(final String message) {
+                        Handler mainHandler = new Handler(AccountActivity.this.getMainLooper());
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(AccountActivity.this, message, Toast.LENGTH_SHORT).show();
+                                stopSpinner();
+                            }
+                        });
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
 
     private void startSpinner() {
         loadingSpinner.setVisibility(View.VISIBLE);
