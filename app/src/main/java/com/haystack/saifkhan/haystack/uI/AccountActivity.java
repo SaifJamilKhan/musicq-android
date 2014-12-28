@@ -1,7 +1,6 @@
 package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
-import android.app.MediaRouteButton;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+import android.widget.ViewFlipper;
 
 import com.haystack.saifkhan.haystack.Models.MusicQLoginCall;
 import com.haystack.saifkhan.haystack.R;
@@ -46,6 +46,20 @@ public class AccountActivity extends Activity {
 
     @InjectView(R.id.background_video_view)
     VideoView backgroundVideoView;
+
+
+    @InjectView(R.id.view_flipper)
+    ViewFlipper viewFlipper;
+
+    @OnClick(R.id.login_switch_btn)
+    public void loginSwitchButton() {
+        viewFlipper.setDisplayedChild(0);
+    }
+
+    @OnClick(R.id.register_switch_btn)
+    public void registerSwitchButton() {
+        viewFlipper.setDisplayedChild(1);
+    }
 
     @OnClick(R.id.login_btn)
     public void onLoginPressed(View view) {
@@ -126,6 +140,12 @@ public class AccountActivity extends Activity {
                 mp.setLooping(true);
             }
         });
+
+        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this,
+                R.anim.fade_in));
+        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+                R.anim.fade_out));
+
         SharedPreferences sharedPreferences = getSharedPreferences(this.getPackageName(), MODE_PRIVATE);
         if(sharedPreferences.contains("auth_token")) {
             String authToken = sharedPreferences.getString("auth_token", "");
