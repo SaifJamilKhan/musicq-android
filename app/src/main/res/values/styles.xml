@@ -2,10 +2,10 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <style name="FancyText" parent="@style/Text">
+    </style>
+        <style name="FancyText">
             <item name="android:textSize">12sp</item>
             <item name="android:textStyle">bold</item>
             <item name="android:padding">15dp</item>
         </style>
-    </style>
 </resources>

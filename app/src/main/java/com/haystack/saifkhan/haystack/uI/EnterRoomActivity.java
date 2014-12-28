@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,16 +66,38 @@ public class EnterRoomActivity extends Activity{
 
     @InjectView(R.id.add_circle_button)
     CustomFAB circleFABButton;
-    
+
     private EnterQueueViewHolder mEnterQueueViewHolder;
+    private View mEnterQueueView;
+    private PopupWindow popWindow;
 
     @OnClick(R.id.add_circle_button)
     public void addPressed(View view) {
-        LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View inflatedView = layoutInflater.inflate(R.layout.enter_queue_popover, null,false);
-        mEnterQueueViewHolder = new EnterQueueViewHolder(inflatedView);
 
-        circleFABButton.rotateForward();
+        if(mEnterQueueView == null || mEnterQueueViewHolder == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            mEnterQueueView = layoutInflater.inflate(R.layout.enter_queue_popover, null, false);
+            mEnterQueueViewHolder = new EnterQueueViewHolder(mEnterQueueView);
+        }
+
+
+        if(popWindow == null || !popWindow.isShowing()) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            popWindow = new PopupWindow(mEnterQueueView, size.x - 50, size.y - 500, true);
+            popWindow.setFocusable(true);
+
+            popWindow.setOutsideTouchable(true);
+
+            popWindow.setAnimationStyle(R.anim.fade_in); // call this before showing the popup
+            popWindow.showAtLocation(mEnterQueueView, Gravity.BOTTOM, 0, 150);  // 0 - X postion and 150 - Y position
+            circleFABButton.rotateForward();
+        } else {
+            circleFABButton.rotateBackward();
+            popWindow.dismiss();
+        }
     }
 
     public static class EnterQueueViewHolder {
@@ -214,6 +240,14 @@ public class EnterRoomActivity extends Activity{
     protected void onStart() {
         super.onStart();
         loadPlaylistsFromDatabase();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(popWindow!= null && popWindow.isShowing()) {
+            popWindow.dismiss();
+        }
     }
 
     private void loadPlaylistsFromDatabase() {
