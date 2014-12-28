@@ -12,4 +12,7 @@
     <color name="refresh_progress_3">#FF0000</color>
     <color name="refresh_progress_4">#990000</color>
 
+    <color name="musicq_red">#FC2052</color>
+    <color name="musicq_deep_red">#B01639</color>
+    <color name="musicq_light_red">#C65871</color>
 </resources>
