@@ -67,7 +67,6 @@ public class EnterRoomActivity extends Activity{
         circleFABButton.rotateForward();
     }
 
-
     @OnClick(R.id.existing_room_btn)
     public void onExistingPressed(View view) {
         final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(existingPlaylistPin.getText().toString());

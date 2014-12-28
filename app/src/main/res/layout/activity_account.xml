@@ -13,6 +13,12 @@
         android:layout_height="fill_parent"
         android:layout_centerInParent="true" />
 
+    <ImageView
+        android:layout_centerInParent="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/overlay"/>
+
     <ViewFlipper
         android:id="@+id/view_flipper"
         android:layout_width="match_parent"
@@ -33,6 +39,8 @@
                     android:id="@+id/login_email_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:text="saif@saif." />
@@ -41,6 +49,8 @@
                     android:id="@+id/login_password_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:text="password" />
@@ -94,6 +104,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/user_name"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:inputType="text"
                     android:text="somename" />
 
@@ -101,6 +113,8 @@
                     android:id="@+id/create_account_email_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:text="saif@saif." />
@@ -109,14 +123,18 @@
                     android:id="@+id/create_account_password_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:text="password"></EditText>
+                    android:text="password"/>
 
                 <EditText
                     android:id="@+id/create_account_password_confirm_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/textview_rounded_corners"
+                    android:padding="5dp"
                     android:hint="@string/confirm_password"
                     android:inputType="textPassword"
                     android:text="password" />
