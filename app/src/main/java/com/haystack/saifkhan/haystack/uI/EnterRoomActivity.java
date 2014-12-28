@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -61,12 +62,36 @@ public class EnterRoomActivity extends Activity{
 
     @InjectView(R.id.add_circle_button)
     CustomFAB circleFABButton;
+    
+    private EnterQueueViewHolder mEnterQueueViewHolder;
 
     @OnClick(R.id.add_circle_button)
     public void addPressed(View view) {
+        LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View inflatedView = layoutInflater.inflate(R.layout.enter_queue_popover, null,false);
+        mEnterQueueViewHolder = new EnterQueueViewHolder(inflatedView);
+
         circleFABButton.rotateForward();
     }
 
+    public static class EnterQueueViewHolder {
+
+        @InjectView(R.id.new_queue_btn)
+        Button newQueueButton;
+
+        @InjectView(R.id.join_queue_btn)
+        Button joinQueueButton;
+
+        @InjectView(R.id.queue_id_name_text_view)
+        TextView queueIDNameTextView;
+
+        @InjectView(R.id.join_create_queue_btn)
+        Button joinCreateQueueButton;
+
+        public EnterQueueViewHolder(View view){
+            ButterKnife.inject(this, view);
+        }
+    }
     @OnClick(R.id.existing_room_btn)
     public void onExistingPressed(View view) {
         final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(existingPlaylistPin.getText().toString());

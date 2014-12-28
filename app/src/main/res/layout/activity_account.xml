@@ -39,24 +39,20 @@
                     android:id="@+id/login_email_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/FancyText"
                     android:background="@drawable/textview_rounded_corners_top"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
-                    android:textStyle="bold"
                     android:text="saif@saif." />
 
                 <EditText
                     android:id="@+id/login_password_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/FancyText"
                     android:background="@drawable/textview_rounded_corners_bottom"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:textStyle="bold"
                     android:text="password" />
 
                 <Button
@@ -109,10 +105,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/user_name"
                     android:background="@drawable/textview_rounded_corners_top"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:inputType="text"
-                    android:textStyle="bold"
+                    style="@style/FancyText"
                     android:text="somename" />
 
                 <EditText
@@ -120,12 +114,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/textview_rounded_corners"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:typeface="normal"
-                    android:textStyle="bold"
+                    style="@style/FancyText"
                     android:text="saif@saif." />
 
                 <EditText
@@ -133,11 +125,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/textview_rounded_corners"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:textStyle="bold"
+                    style="@style/FancyText"
                     android:text="password"/>
 
                 <EditText
@@ -145,11 +135,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/textview_rounded_corners_bottom"
-                    android:padding="15dp"
-                    android:textSize="12sp"
                     android:hint="@string/confirm_password"
                     android:inputType="textPassword"
-                    android:textStyle="bold"
+                    style="@style/FancyText"
                     android:text="password" />
 
                 <Button

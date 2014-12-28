@@ -28,4 +28,8 @@
     <string name="pin">Pin</string>
     <string name="recents">Recents</string>
     <string name="error">Error</string>
+    <string name="new_queue">NEW QUEUE</string>
+
+    <string name="create_queue">CREATE_QUEUE</string>
+    <string name="join_queue">JOIN QUEUE</string>
 </resources>
