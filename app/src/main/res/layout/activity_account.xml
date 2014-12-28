@@ -9,57 +9,72 @@
 
     <com.haystack.saifkhan.haystack.uI.ResizedVideoView
         android:id="@+id/background_video_view"
-        android:layout_centerInParent="true"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true" />
 
-    <LinearLayout
+    <ViewFlipper
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_margin="40dp"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/login_email_text"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="saif@saif."
-            android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+            android:layout_height="match_parent"
+            android:layout_margin="40dp">
 
-        <EditText
-            android:id="@+id/login_password_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="password"
-            android:hint="@string/password"
-            android:inputType="textPassword" >
-        </EditText>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/login_btn"
-            android:text="@string/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/rounded_edges"
-            android:typeface="monospace"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="10dp"
-            android:textSize="17sp" />
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/login_email_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/email"
+                    android:inputType="textEmailAddress"
+                    android:text="saif@saif." />
 
+                <EditText
+                    android:id="@+id/login_password_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    android:text="password" />
+
+                <Button
+                    android:id="@+id/login_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rounded_edges"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/login_button"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp"
+                    android:typeface="normal" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/register_switch_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edges_clear"
+                android:layout_alignParentBottom="true"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="25dp"
+                android:text="@string/signup_button"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:typeface="normal" />
+        </RelativeLayout>
+    </ViewFlipper>
 
     <include layout="@layout/loading_spinner" />
-    <!--<Button-->
-        <!--android:id="@+id/signup_button"-->
-        <!--android:text="@string/signup_button"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_marginBottom="10dp"-->
-        <!--android:background="#800000"-->
-        <!--android:textColor="#FFFFFF"-->
-        <!--android:textSize="30sp" />-->
 
 </RelativeLayout>
