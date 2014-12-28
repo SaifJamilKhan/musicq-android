@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
+        android:gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         >
@@ -73,7 +75,19 @@
 
         </LinearLayout>
 
+        <com.haystack.saifkhan.haystack.uI.CustomFAB
+            android:id="@+id/add_circle_button"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@android:drawable/ic_input_add"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            custom:bg_color="@color/musicq_red"
+            android:tint="@android:color/white"
+            />
 
         <include layout="@layout/loading_spinner" />
-    </FrameLayout>
+    </RelativeLayout>
 </ScrollView>

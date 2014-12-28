@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,15 @@ public class EnterRoomActivity extends Activity{
     @InjectView(R.id.existing_playlist_pin)
     TextView existingPlaylistPin;
 
+    @InjectView(R.id.add_circle_button)
+    CustomFAB circleFABButton;
+
+    @OnClick(R.id.add_circle_button)
+    public void addPressed(View view) {
+        circleFABButton.rotateForward();
+    }
+
+
     @OnClick(R.id.existing_room_btn)
     public void onExistingPressed(View view) {
         final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(existingPlaylistPin.getText().toString());
@@ -69,6 +79,8 @@ public class EnterRoomActivity extends Activity{
             Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + existingPlaylistPin.getText().toString(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     @OnClick(R.id.new_room_btn)
     public void onNewRoomPressed(View view) {
