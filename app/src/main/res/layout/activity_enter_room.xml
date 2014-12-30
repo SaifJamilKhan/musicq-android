@@ -3,87 +3,17 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:fillViewport="true"
     android:orientation="vertical">
 
-    <ScrollView
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:orientation="vertical">
+        android:layout_height="match_parent" />
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <EditText
-                    android:id="@+id/playlist_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:hint="@string/name" />
-
-                <EditText
-                    android:id="@+id/playlist_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/description" />
-
-                <Button
-                    android:id="@+id/new_room_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/holo_orange_light"
-                    android:padding="10dp"
-                    android:text="@string/new_room_btn_text"
-                    android:textColor="@android:color/black" />
-
-                <EditText
-                    android:id="@+id/existing_playlist_pin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:hint="@string/pin"
-                    android:inputType="number" />
-
-                <Button
-                    android:id="@+id/existing_room_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/holo_orange_light"
-                    android:padding="10dp"
-                    android:text="@string/existing_room_btn_text"
-                    android:textColor="@android:color/black" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/recents" />
-
-                <!--Dynamically add recents-->
-                <LinearLayout
-                    android:id="@+id/recents_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <include layout="@layout/loading_spinner" />
-        </RelativeLayout>
-    </ScrollView>
     <include layout="@layout/enter_queue_popover" />
+    <include layout="@layout/loading_spinner" />
 
     <com.haystack.saifkhan.haystack.uI.CustomFAB
         android:id="@+id/add_circle_button"

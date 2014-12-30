@@ -34,7 +34,7 @@
             android:background="@android:color/transparent"
             android:gravity="right"
             android:text="@string/join_queue"
-            android:textColor="@color/musicq_red"
+            android:textColor="@color/text_light_gray"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -86,6 +86,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textview_rounded_all_corners"
+                android:inputType="number"
                 android:hint="@string/existing_queue_id" />
 
             <Button

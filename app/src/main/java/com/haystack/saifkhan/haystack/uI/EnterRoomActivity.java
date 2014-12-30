@@ -1,6 +1,8 @@
 package com.haystack.saifkhan.haystack.uI;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Display;
@@ -48,31 +51,24 @@ import timber.log.Timber;
  */
 public class EnterRoomActivity extends Activity{
 
-    @InjectView(R.id.playlist_name)
-    EditText playlistName;
-
-    @InjectView(R.id.playlist_description)
-    EditText playlistDescription;
+    @InjectView(R.id.pager)
+    ViewPager pager;
 
     @InjectView(R.id.loading_spinner)
     public View loadingSpinner;
 
-    @InjectView(R.id.recents_list)
-    public LinearLayout recentsList;
 
     @InjectView(R.id.loading_spinner_image_view)
     public View loadingSpinnerImageView;
 
-    @InjectView(R.id.existing_playlist_pin)
-    TextView existingPlaylistPin;
-
     @InjectView(R.id.add_circle_button)
     CustomFAB circleFABButton;
 
-    private EnterQueueViewHolder mEnterQueueViewHolder;
-
     @InjectView(R.id.enter_queue_view)
     public View mEnterQueueView;
+
+    private EnterQueueViewHolder mEnterQueueViewHolder;
+    private QueueShowcasePagerAdapter mQueuesAdapter;
 
 //    private PopupWindow popWindow;
 
@@ -116,15 +112,26 @@ public class EnterRoomActivity extends Activity{
 
     public static class EnterQueueViewHolder {
 
-        private final Activity activity;
+        private final EnterRoomActivity activity;
+
         @InjectView(R.id.new_queue_btn)
         Button newQueueButton;
+
+        @OnClick(R.id.new_queue_action_btn)
+        public void newQueueButtonPressed() {
+            activity.createPlaylistWithName(newQueueNameTextView.getText().toString());
+        }
 
         @InjectView(R.id.join_queue_btn)
         Button joinQueueButton;
 
+        @OnClick(R.id.join_queue_action_btn)
+        public void setJoinQueueButtonPressed() {
+            activity.joinPlaylistWithID(joinQueueTextView.getText().toString());
+        }
+
         @InjectView(R.id.new_queue_text_view)
-        EditText queueIDNameTextView;
+        EditText newQueueNameTextView;
 
         @InjectView(R.id.join_queue_text_view)
         EditText joinQueueTextView;
@@ -133,7 +140,7 @@ public class EnterRoomActivity extends Activity{
         ViewFlipper viewFlipper;
 
         @OnClick(R.id.new_queue_btn)
-        public void newQueueButtonPressed() {
+        public void switchNewQueueButtonPressed() {
             this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
             this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
             viewFlipper.setDisplayedChild(0);
@@ -146,7 +153,7 @@ public class EnterRoomActivity extends Activity{
             viewFlipper.setDisplayedChild(1);
         }
 
-        public EnterQueueViewHolder(View view, Activity referenceContext){
+        public EnterQueueViewHolder(View view, EnterRoomActivity referenceContext){
             ButterKnife.inject(this, view);
             this.activity = referenceContext;
             viewFlipper.setInAnimation(AnimationUtils.loadAnimation(activity,
@@ -155,26 +162,23 @@ public class EnterRoomActivity extends Activity{
                     R.anim.fade_out));
         }
     }
-    @OnClick(R.id.existing_room_btn)
-    public void onExistingPressed(View view) {
-        final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(existingPlaylistPin.getText().toString());
+
+    public void joinPlaylistWithID(String id) {
+        final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(id);
         if(playlist != null && !TextUtils.isEmpty(playlist.id)) {
             SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
             sharedPreferences.edit().putString("currentPlaylistID", playlist.id).apply();
             goToMainActivity();
         } else {
-            Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + existingPlaylistPin.getText().toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + id, Toast.LENGTH_SHORT).show();
         }
     }
 
 
-
-    @OnClick(R.id.new_room_btn)
-    public void onNewRoomPressed(View view) {
+    public void createPlaylistWithName(String name) {
         MusicQPlayList playlist = new MusicQPlayList();
-        playlist.name = playlistName.getText().toString();
-        playlist.description = playlistDescription.getText().toString();
-        if(validateCreateCall()) {
+        playlist.name = name;
+        if(validateCreateCall(name)) {
             startSpinner();
             NetworkUtils.createPlaylist(playlist, new NetworkUtils.NetworkCallListener() {
                 @Override
@@ -230,7 +234,6 @@ public class EnterRoomActivity extends Activity{
                 }
             }, EnterRoomActivity.this);
         }
-
     }
 
     @Override
@@ -245,6 +248,45 @@ public class EnterRoomActivity extends Activity{
                 return true;
             }
         });
+        mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager());
+        pager.setAdapter(mQueuesAdapter);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                // When the tab is selected, switch to the
+                // corresponding page in the ViewPager.
+                pager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+            }
+
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+
+            }
+        };
+        for (int i = 0; i < 2; i++) {
+            actionBar.addTab(
+                    actionBar.newTab()
+                            .setText("Tab " + (i + 1))
+                            .setTabListener(tabListener));
+        }
+        pager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        // When swiping between pages, select the
+                        // corresponding tab.
+                        actionBar.setSelectedNavigationItem(position);
+                    }
+                });
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
     }
 
     @Nullable
@@ -256,7 +298,7 @@ public class EnterRoomActivity extends Activity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadPlaylistsFromDatabase();
+//                        loadPlaylistsFromDatabase();
                     }
                 });
             }
@@ -266,7 +308,7 @@ public class EnterRoomActivity extends Activity{
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadPlaylistsFromDatabase();
+//                        loadPlaylistsFromDatabase();
                     }
                 });
             }
@@ -283,7 +325,7 @@ public class EnterRoomActivity extends Activity{
     @Override
     protected void onStart() {
         super.onStart();
-        loadPlaylistsFromDatabase();
+//        loadPlaylistsFromDatabase();
     }
 
     @Override
@@ -296,24 +338,24 @@ public class EnterRoomActivity extends Activity{
         }
     }
 
-    private void loadPlaylistsFromDatabase() {
-        HashMap<String, MusicQPlayList> playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
-        if ((playlists != null && playlists.size() > 0) && recentsList.getChildCount() != playlists.size()) {
-            recentsList.removeAllViews();
-            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService
-                    (Context.LAYOUT_INFLATER_SERVICE);
-            for (MusicQPlayList playList : playlists.values()) {
-                View view = inflater.inflate(R.layout.playlist_cell, null);
-                recentsList.addView(view);
-                PlaylistCellViewHolder holder = new PlaylistCellViewHolder(view);
-                holder.playlistName.setText(playList.name);
-                holder.playlistDescription.setText(playList.id.concat(" ") + playList.description);
-            }
-        }
-    }
+//    private void loadPlaylistsFromDatabase() {
+//        HashMap<String, MusicQPlayList> playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+//        if ((playlists != null && playlists.size() > 0) && recentsList.getChildCount() != playlists.size()) {
+//            recentsList.removeAllViews();
+//            LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService
+//                    (Context.LAYOUT_INFLATER_SERVICE);
+//            for (MusicQPlayList playList : playlists.values()) {
+//                View view = inflater.inflate(R.layout.playlist_cell, null);
+//                recentsList.addView(view);
+//                PlaylistCellViewHolder holder = new PlaylistCellViewHolder(view);
+//                holder.playlistName.setText(playList.name);
+//                holder.playlistDescription.setText(playList.id.concat(" ") + playList.description);
+//            }
+//        }
+//    }
 
-    private boolean validateCreateCall() {
-        if(TextUtils.isEmpty(playlistName.getText().toString())) {
+    private boolean validateCreateCall(String name) {
+        if(TextUtils.isEmpty(name)) {
             Toast.makeText(EnterRoomActivity.this, "Please Enter name", Toast.LENGTH_SHORT).show();
             return false;
         }
