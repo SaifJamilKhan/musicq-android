@@ -75,6 +75,8 @@
 
         </LinearLayout>
 
+        <include layout="@layout/enter_queue_popover" />
+
         <com.haystack.saifkhan.haystack.uI.CustomFAB
             android:id="@+id/add_circle_button"
             android:layout_width="56dp"

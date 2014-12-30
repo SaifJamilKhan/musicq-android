@@ -60,8 +60,8 @@ public class CustomFAB extends ImageButton {
         Resources.Theme theme = ctx.getTheme();
         TypedArray arr = theme.obtainStyledAttributes(attrSet, R.styleable.FAB, 0, 0);
         try {
-            setBgColor(arr.getColor(R.styleable.FAB_bg_color,  R.color.musicq_red));
-            setBgColorPressed(arr.getColor(R.styleable.FAB_bg_color_pressed, R.color.musicq_deep_red));
+            setBgColor(getResources().getColor(R.color.musicq_red));
+            setBgColorPressed(getResources().getColor(R.color.musicq_deep_red));
             StateListDrawable sld = new StateListDrawable();
 
             sld.addState(new int[]{android.R.attr.state_pressed}, createButton(bgColorPressed));
@@ -83,10 +83,11 @@ public class CustomFAB extends ImageButton {
     }
 
     public void rotateForward(){
-        this.clearAnimation();
         this.setEnabled(false);
         Animation animation =new RotateAnimation(0, 45, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setDuration(400);
+        animation.setFillAfter(true);
+        animation.setFillEnabled(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -95,6 +96,7 @@ public class CustomFAB extends ImageButton {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                clearAnimation();
                 CustomFAB.this.setRotation(45);
                 CustomFAB.this.setEnabled(true);
             }
@@ -109,9 +111,11 @@ public class CustomFAB extends ImageButton {
 
 
     public void rotateBackward(){
-        this.clearAnimation();
-        Animation animation =new RotateAnimation(45, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        Animation animation =new RotateAnimation(0, -45, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setFillAfter(true);
+        animation.setFillEnabled(true);
         animation.setDuration(400);
+        CustomFAB.this.setEnabled(false);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -120,7 +124,9 @@ public class CustomFAB extends ImageButton {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                clearAnimation();
                 CustomFAB.this.setRotation(0);
+                CustomFAB.this.setEnabled(true);
             }
 
             @Override

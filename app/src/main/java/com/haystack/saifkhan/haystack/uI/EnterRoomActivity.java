@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -68,36 +69,48 @@ public class EnterRoomActivity extends Activity{
     CustomFAB circleFABButton;
 
     private EnterQueueViewHolder mEnterQueueViewHolder;
-    private View mEnterQueueView;
-    private PopupWindow popWindow;
+
+    @InjectView(R.id.enter_queue_view)
+    public View mEnterQueueView;
+
+//    private PopupWindow popWindow;
 
     @OnClick(R.id.add_circle_button)
     public void addPressed(View view) {
 
-        if(mEnterQueueView == null || mEnterQueueViewHolder == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mEnterQueueView = layoutInflater.inflate(R.layout.enter_queue_popover, null, false);
-            mEnterQueueViewHolder = new EnterQueueViewHolder(mEnterQueueView);
-        }
+//        if(mEnterQueueView == null || mEnterQueueViewHolder == null) {
+////            LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+////            mEnterQueueView = layoutInflater.inflate(R.layout.enter_queue_popover, null, false);
+//        }
 
 
-        if(popWindow == null || !popWindow.isShowing()) {
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-
-            popWindow = new PopupWindow(mEnterQueueView, size.x - 50, size.y - 500, true);
-            popWindow.setFocusable(true);
-
-            popWindow.setOutsideTouchable(true);
-
-            popWindow.setAnimationStyle(R.anim.fade_in); // call this before showing the popup
-            popWindow.showAtLocation(mEnterQueueView, Gravity.BOTTOM, 0, 150);  // 0 - X postion and 150 - Y position
+        if(mEnterQueueView.getVisibility() != View.VISIBLE) {
+            mEnterQueueView.setVisibility(View.VISIBLE);
             circleFABButton.rotateForward();
         } else {
+            mEnterQueueView.setVisibility(View.GONE);
             circleFABButton.rotateBackward();
-            popWindow.dismiss();
         }
+
+
+
+//        if(popWindow == null || !popWindow.isShowing()) {
+//            Display display = getWindowManager().getDefaultDisplay();
+//            Point size = new Point();
+//            display.getSize(size);
+//
+//            popWindow = new PopupWindow(mEnterQueueView, size.x - 50, size.y - 500, true);
+//            popWindow.setFocusable(true);
+//
+//            popWindow.setOutsideTouchable(true);
+//
+//            popWindow.setAnimationStyle(R.anim.fade_in); // call this before showing the popup
+//            popWindow.showAtLocation(view.getRootView(), Gravity.BOTTOM, 0, 150);  // 0 - X postion and 150 - Y position
+//            circleFABButton.rotateForward();
+//        } else {
+//            circleFABButton.rotateBackward();
+//            popWindow.dismiss();
+//        }
     }
 
     public static class EnterQueueViewHolder {
@@ -201,6 +214,13 @@ public class EnterRoomActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_room);
         ButterKnife.inject(this);
+        mEnterQueueViewHolder = new EnterQueueViewHolder(mEnterQueueView);
+        mEnterQueueView.setOnTouchListener( new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
     }
 
     @Nullable
@@ -245,9 +265,9 @@ public class EnterRoomActivity extends Activity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(popWindow!= null && popWindow.isShowing()) {
-            popWindow.dismiss();
-        }
+//        if(popWindow!= null && popWindow.isShowing()) {
+//            popWindow.dismiss();
+//        }
     }
 
     private void loadPlaylistsFromDatabase() {
