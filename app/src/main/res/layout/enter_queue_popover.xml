@@ -1,42 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/enter_queue_view"
-    android:orientation="vertical"
-    android:background="@color/transparent_background"
-    android:visibility="gone"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/transparent_dark_background"
+    android:orientation="vertical"
+    android:padding="50dp"
+    android:visibility="gone">
 
-    <Button
-        android:id="@+id/new_queue_btn"
-        android:background="@android:color/transparent"
-        android:text="@string/new_queue"
-        android:textColor="@color/musicq_red"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/join_queue_btn"
-        android:background="@android:color/transparent"
-        android:text="@string/join_queue"
-        android:textColor="@color/musicq_red"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/new_queue_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/new_queue"
+            android:textColor="@color/musicq_red"
+            android:gravity="left"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/join_queue_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="@string/join_queue"
+            android:textColor="@color/musicq_red"
+            android:gravity="right"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/queue_id_name_text_view"
         style="@style/FancyText"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/join_queue_btn"
-        android:background="@drawable/textview_rounded_all_corners"
+        android:hint="@string/new_queue_name"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/textview_rounded_all_corners" />
 
     <Button
         android:id="@+id/join_create_queue_btn"
@@ -52,4 +61,4 @@
         android:textStyle="bold"
         android:typeface="normal" />
 
-</RelativeLayout>
+</LinearLayout>

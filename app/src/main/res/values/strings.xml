@@ -30,6 +30,7 @@
     <string name="error">Error</string>
     <string name="new_queue">NEW QUEUE</string>
 
-    <string name="create_queue">CREATE_QUEUE</string>
+    <string name="create_queue">CREATE QUEUE</string>
     <string name="join_queue">JOIN QUEUE</string>
+    <string name="new_queue_name">New Queue Name</string>
 </resources>

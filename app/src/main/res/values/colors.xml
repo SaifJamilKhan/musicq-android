@@ -3,6 +3,8 @@
 
     <item name="transparent_background" type="color">#60C0C0C0</item>
 
+    <item name="transparent_dark_background" type="color">#E6000000</item>
+
     <item name="current_playing_song" type="color">#FF8585</item>
     <item name="already_played_song" type="color">#CCCCCC</item>
     <item name="upcoming_song" type="color">#FFFFFF</item>
