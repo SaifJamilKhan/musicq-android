@@ -38,7 +38,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
+    <EditText
         android:id="@+id/queue_id_name_text_view"
         style="@style/FancyText"
         android:hint="@string/new_queue_name"

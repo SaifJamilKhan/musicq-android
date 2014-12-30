@@ -79,11 +79,11 @@
 
             </LinearLayout>
 
-            <include layout="@layout/enter_queue_popover" />
 
             <include layout="@layout/loading_spinner" />
         </RelativeLayout>
     </ScrollView>
+    <include layout="@layout/enter_queue_popover" />
 
     <com.haystack.saifkhan.haystack.uI.CustomFAB
         android:id="@+id/add_circle_button"

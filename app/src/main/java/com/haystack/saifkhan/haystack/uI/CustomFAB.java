@@ -85,9 +85,9 @@ public class CustomFAB extends ImageButton {
     public void rotateForward(){
         this.setEnabled(false);
         Animation animation =new RotateAnimation(0, 45, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setDuration(400);
         animation.setFillAfter(true);
         animation.setFillEnabled(true);
+        animation.setDuration(200);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -114,7 +114,7 @@ public class CustomFAB extends ImageButton {
         Animation animation =new RotateAnimation(0, -45, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         animation.setFillAfter(true);
         animation.setFillEnabled(true);
-        animation.setDuration(400);
+        animation.setDuration(200);
         CustomFAB.this.setEnabled(false);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
