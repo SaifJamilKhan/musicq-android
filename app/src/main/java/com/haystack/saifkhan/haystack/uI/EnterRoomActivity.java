@@ -264,10 +264,12 @@ public class EnterRoomActivity extends Activity{
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-//        if(popWindow!= null && popWindow.isShowing()) {
-//            popWindow.dismiss();
-//        }
+        if(mEnterQueueView!= null && mEnterQueueView.getVisibility() == View.VISIBLE) {
+            mEnterQueueView.setVisibility(View.GONE);
+            circleFABButton.rotateBackward();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void loadPlaylistsFromDatabase() {
