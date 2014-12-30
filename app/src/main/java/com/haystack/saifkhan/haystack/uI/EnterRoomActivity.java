@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -115,20 +116,43 @@ public class EnterRoomActivity extends Activity{
 
     public static class EnterQueueViewHolder {
 
+        private final Activity activity;
         @InjectView(R.id.new_queue_btn)
         Button newQueueButton;
 
         @InjectView(R.id.join_queue_btn)
         Button joinQueueButton;
 
-        @InjectView(R.id.queue_id_name_text_view)
-        TextView queueIDNameTextView;
+        @InjectView(R.id.new_queue_text_view)
+        EditText queueIDNameTextView;
 
-        @InjectView(R.id.join_create_queue_btn)
-        Button joinCreateQueueButton;
+        @InjectView(R.id.join_queue_text_view)
+        EditText joinQueueTextView;
 
-        public EnterQueueViewHolder(View view){
+        @InjectView(R.id.new_used_view_flipper)
+        ViewFlipper viewFlipper;
+
+        @OnClick(R.id.new_queue_btn)
+        public void newQueueButtonPressed() {
+            this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
+            this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
+            viewFlipper.setDisplayedChild(0);
+        }
+
+        @OnClick(R.id.join_queue_btn)
+        public void joinQueueButtonPressed() {
+            this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
+            this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
+            viewFlipper.setDisplayedChild(1);
+        }
+
+        public EnterQueueViewHolder(View view, Activity referenceContext){
             ButterKnife.inject(this, view);
+            this.activity = referenceContext;
+            viewFlipper.setInAnimation(AnimationUtils.loadAnimation(activity,
+                    R.anim.fade_in));
+            viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(activity,
+                    R.anim.fade_out));
         }
     }
     @OnClick(R.id.existing_room_btn)
@@ -214,7 +238,7 @@ public class EnterRoomActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_room);
         ButterKnife.inject(this);
-        mEnterQueueViewHolder = new EnterQueueViewHolder(mEnterQueueView);
+        mEnterQueueViewHolder = new EnterQueueViewHolder(mEnterQueueView, this);
         mEnterQueueView.setOnTouchListener( new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

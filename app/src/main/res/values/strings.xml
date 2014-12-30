@@ -33,4 +33,5 @@
     <string name="create_queue">CREATE QUEUE</string>
     <string name="join_queue">JOIN QUEUE</string>
     <string name="new_queue_name">New Queue Name</string>
+    <string name="existing_queue_id">Existing Queue ID</string>
 </resources>

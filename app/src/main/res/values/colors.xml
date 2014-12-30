@@ -17,4 +17,6 @@
     <color name="musicq_red">#FC2052</color>
     <color name="musicq_deep_red">#B01639</color>
     <color name="musicq_light_red">#C65871</color>
+
+    <color name="text_light_gray">#888888</color>
 </resources>
