@@ -9,11 +9,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <View
-        android:background="@color/transparent_dark_background"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
-
     <TextView
         android:id="@+id/title_text_view"
         style="@style/FancyText"

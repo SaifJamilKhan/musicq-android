@@ -3,19 +3,20 @@ package com.haystack.saifkhan.haystack.uI;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 /**
  * Created by saifkhan on 14-12-26.
  */
 public class ListviewSwipeRefreshLayout extends SwipeRefreshLayout {
-    private ListView mListView;
+    private AbsListView mListView;
 
     public ListviewSwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setListView(ListView listView)
+    public void setListView(AbsListView listView)
     {
         mListView = listView;
     }

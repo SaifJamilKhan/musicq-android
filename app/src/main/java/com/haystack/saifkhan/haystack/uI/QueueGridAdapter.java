@@ -2,6 +2,7 @@ package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +77,7 @@ public class QueueGridAdapter extends BaseAdapter{
         } else {
             holder.playlistImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.logo));
         }
+        holder.playlistImageView.setColorFilter(Color.argb(12, 12, 12, 12));
         return view;
     }
 

@@ -11,17 +11,26 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 public class QueueShowcasePagerAdapter extends FragmentStatePagerAdapter {
 
 
+    private EnterRoomActivity.PlaylistSelectListener playlistSelectListener;
+
     public QueueShowcasePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
+    public QueueShowcasePagerAdapter(FragmentManager fragmentManager, EnterRoomActivity.PlaylistSelectListener playlistSelectListener) {
+        super(fragmentManager);
+        this.playlistSelectListener = playlistSelectListener;
+    }
+
     @Override
     public Fragment getItem(int i) {
-        Fragment fragment = new ListOfQueuesFragment();
+        ListOfQueuesFragment fragment = new ListOfQueuesFragment();
         Bundle args = new Bundle();
         // Our object is just an integer :-P
         args.putInt(ListOfQueuesFragment.PAGE_NUMBER, i + 1);
         fragment.setArguments(args);
+
+        fragment.setPlaylistSelectListener(playlistSelectListener);
         return fragment;
     }
 

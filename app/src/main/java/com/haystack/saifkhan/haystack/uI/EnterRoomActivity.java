@@ -251,7 +251,12 @@ public class EnterRoomActivity extends Activity{
                 return true;
             }
         });
-        mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager());
+        mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager(), new PlaylistSelectListener() {
+            @Override
+            public void didSelectPlaylistWithId(String id) {
+                EnterRoomActivity.this.joinPlaylistWithID(id);
+            }
+        });
         pager.setAdapter(mQueuesAdapter);
 
         final ActionBar actionBar = getActionBar();
@@ -275,7 +280,7 @@ public class EnterRoomActivity extends Activity{
         for (int i = 0; i < 2; i++) {
             actionBar.addTab(
                     actionBar.newTab()
-                            .setText("Tab " + (i + 1))
+                            .setText(mQueuesAdapter.getPageTitle(i))
                             .setTabListener(tabListener));
         }
         pager.setOnPageChangeListener(
@@ -292,6 +297,9 @@ public class EnterRoomActivity extends Activity{
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
 
+    public static abstract class PlaylistSelectListener {
+        public abstract void didSelectPlaylistWithId(String id);
+    }
     @Nullable
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
