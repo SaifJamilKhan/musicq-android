@@ -76,9 +76,8 @@ public class ListOfQueuesFragment extends Fragment {
 
     private void setEmptyView() {
         TextView emptyTextView = new TextView(getActivity());
-        emptyTextView.setText("Playlist You");
-
-
+        emptyTextView.setText("Playlist You Create Will Show Here");
+        mHolder.gridView.setEmptyView(emptyTextView);
     }
 
     private void getAllPlaylistsFromNetwork() {

@@ -3,6 +3,8 @@ package com.haystack.saifkhan.haystack.uI;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -41,7 +43,7 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        setTitle("Playlist 2");
+        setTitle("Playlist ID: " + getPlaylistId());
         youtubeFragment =  (YouTubePlayerFragment) getFragmentManager()
                 .findFragmentById(R.id.youtube_fragment);
         youtubeFragment.initialize(YoutubeNetworkUtil.YOUTUBE_PLAYER_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -57,6 +59,11 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
         });
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
+    }
+
+    private String getPlaylistId() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences(this.getPackageName(), Context.MODE_PRIVATE);
+        return sharedPreferences.getString("currentPlaylistID", "");
     }
 
     @Override

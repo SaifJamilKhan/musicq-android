@@ -175,7 +175,6 @@ public class EnterRoomActivity extends Activity{
         }
     }
 
-
     public void createPlaylistWithName(String name) {
         MusicQPlayList playlist = new MusicQPlayList();
         playlist.name = name;
