@@ -13,7 +13,6 @@
         android:layout_height="match_parent" />
 
     <include layout="@layout/enter_queue_popover" />
-    <include layout="@layout/loading_spinner" />
 
     <com.haystack.saifkhan.haystack.uI.CustomFAB
         android:id="@+id/add_circle_button"
@@ -26,4 +25,7 @@
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         custom:bg_color="@color/musicq_red" />
+
+    <include layout="@layout/loading_spinner" />
+
 </RelativeLayout>

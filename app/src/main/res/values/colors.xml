@@ -4,7 +4,7 @@
     <item name="transparent_background" type="color">#60C0C0C0</item>
 
     <item name="transparent_dark_background" type="color">#E6000000</item>
-    <item name="transparent_dark_gray_background" type="color">#E6222222</item>
+    <item name="transparent_dark_gray_background" type="color">#AA000000</item>
     <item name="dark_grey" type="color">#222222</item>
 
     <item name="current_playing_song" type="color">#FF8585</item>
