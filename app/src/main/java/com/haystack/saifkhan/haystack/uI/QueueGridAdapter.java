@@ -75,7 +75,7 @@ public class QueueGridAdapter extends BaseAdapter{
         if(!TextUtils.isEmpty(thumbnailURL)) {
             Picasso.with(mActivity).load(thumbnailURL).into(holder.playlistImageView);
         } else {
-            holder.playlistImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.logo));
+//            holder.playlistImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.logo));
         }
         holder.playlistImageView.setColorFilter(Color.argb(12, 12, 12, 12));
         return view;
@@ -87,6 +87,8 @@ public class QueueGridAdapter extends BaseAdapter{
 
         @InjectView(R.id.image_view)
         ImageView playlistImageView;
+
+        public View view;
 
         public PlaylistViewHolder(View view) {
             ButterKnife.inject(this, view);

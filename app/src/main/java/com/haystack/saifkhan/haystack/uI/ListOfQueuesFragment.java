@@ -1,6 +1,7 @@
 package com.haystack.saifkhan.haystack.uI;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -82,26 +83,32 @@ public class ListOfQueuesFragment extends Fragment {
         NetworkUtils.getAllPlaylists(new NetworkUtils.NetworkCallListener() {
             @Override
             public void didSucceed() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadPlaylistsFromDatabase();
-                        stopSpinner();
-                        mHolder.swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                Activity activity = getActivity();
+                if(activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadPlaylistsFromDatabase();
+                            stopSpinner();
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
             }
 
             @Override
             public void didSucceedWithJson(JSONObject body) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadPlaylistsFromDatabase();
-                        mHolder.swipeRefreshLayout.setRefreshing(false);
-                        stopSpinner();
-                    }
-                });
+                Activity activity = getActivity();
+                if(activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadPlaylistsFromDatabase();
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
+                            stopSpinner();
+                        }
+                    });
+                }
             }
 
             @Override

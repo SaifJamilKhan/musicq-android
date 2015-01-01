@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/red" >
         <activity
             android:name=".uI.AccountActivity"
             android:configChanges="orientation"
@@ -27,6 +27,7 @@
             android:name=".uI.EnterRoomActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
+            android:theme="@style/red"
             android:label="@string/app_name" >
         </activity>
         <activity

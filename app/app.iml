@@ -90,6 +90,7 @@
     <orderEntry type="library" exported="" name="okio-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="google-api-services-youtube-v3-rev120-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.1.0-RC1" level="project" />
+    <orderEntry type="library" exported="" name="actionbarsherlock-4.4.0" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-1.19.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.0" level="project" />
     <orderEntry type="library" exported="" name="mimecraft-1.1.1" level="project" />

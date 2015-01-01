@@ -291,6 +291,7 @@ public class EnterRoomActivity extends Activity{
                             .setText(mQueuesAdapter.getPageTitle(i))
                             .setTabListener(tabListener));
         }
+
         pager.setOnPageChangeListener(
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override

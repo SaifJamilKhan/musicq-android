@@ -19,6 +19,7 @@
 
             <GridView
                 android:id="@+id/grid_view"
+                android:listSelector="@drawable/gridview_selector"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:numColumns="2" />
