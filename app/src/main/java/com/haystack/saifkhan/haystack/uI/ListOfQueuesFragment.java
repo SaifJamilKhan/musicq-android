@@ -75,9 +75,7 @@ public class ListOfQueuesFragment extends Fragment {
     }
 
     private void setEmptyView() {
-        TextView emptyTextView = new TextView(getActivity());
-        emptyTextView.setText("Playlist You Create Will Show Here");
-        mHolder.gridView.setEmptyView(emptyTextView);
+        mHolder.gridView.setEmptyView(mHolder.emptyTextView);
     }
 
     private void getAllPlaylistsFromNetwork() {
@@ -88,6 +86,7 @@ public class ListOfQueuesFragment extends Fragment {
                     @Override
                     public void run() {
                         loadPlaylistsFromDatabase();
+                        stopSpinner();
                         mHolder.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -100,6 +99,7 @@ public class ListOfQueuesFragment extends Fragment {
                     public void run() {
                         loadPlaylistsFromDatabase();
                         mHolder.swipeRefreshLayout.setRefreshing(false);
+                        stopSpinner();
                     }
                 });
             }
@@ -107,6 +107,8 @@ public class ListOfQueuesFragment extends Fragment {
             @Override
             public void didFailWithMessage(String message) {
                 Timber.e(message);
+                stopSpinner();
+                mHolder.swipeRefreshLayout.setRefreshing(false);
             }
         }, getActivity());
     }
@@ -117,11 +119,19 @@ public class ListOfQueuesFragment extends Fragment {
         loadPlaylistsFromDatabase();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopSpinner();
+    }
+
     private void loadPlaylistsFromDatabase() {
         HashMap<String, MusicQPlayList> playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
         if ((playlists != null && playlists.size() > 0) && mHolder.gridView.getChildCount() != playlists.size()) {
             mQueuesAdapter.setQueues(new ArrayList<MusicQPlayList>(playlists.values()));
             mQueuesAdapter.notifyDataSetChanged();
+        } else {
+            startSpinner();
         }
     }
 
@@ -129,16 +139,29 @@ public class ListOfQueuesFragment extends Fragment {
         this.playlistSelectListener = playlistSelectListener;
     }
 
+    private void startSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fast_rotator);
+        mHolder.loadingSpinnerImageView.startAnimation(animation);
+    }
+
+    private void stopSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.GONE);
+        mHolder.loadingSpinnerImageView.clearAnimation();
+    }
+
     static class ViewHolder {
+        @InjectView(R.id.loading_spinner)
+        View loadingSpinner;
+
+        @InjectView(R.id.loading_spinner_image_view)
+        View loadingSpinnerImageView;
+
+        @InjectView(R.id.emptyTextView)
+        public TextView emptyTextView;
 
         @InjectView(R.id.grid_view)
         public GridView gridView;
-
-        @InjectView(R.id.loading_spinner)
-        public View spinnerView;
-
-        @InjectView(R.id.loading_spinner_image_view)
-        public ImageView spinnerImageView;
 
         @InjectView(R.id.swipe_refresh)
         public ListviewSwipeRefreshLayout swipeRefreshLayout;

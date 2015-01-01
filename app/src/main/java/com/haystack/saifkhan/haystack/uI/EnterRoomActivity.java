@@ -132,10 +132,10 @@ public class EnterRoomActivity extends Activity{
         }
 
         @InjectView(R.id.new_queue_text_view)
-        EditText newQueueNameTextView;
+        MaxLengthTextView newQueueNameTextView;
 
         @InjectView(R.id.join_queue_text_view)
-        EditText joinQueueTextView;
+        MaxLengthTextView joinQueueTextView;
 
         @InjectView(R.id.new_used_view_flipper)
         ViewFlipper viewFlipper;
@@ -145,13 +145,17 @@ public class EnterRoomActivity extends Activity{
             this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
             this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
             viewFlipper.setDisplayedChild(0);
+            newQueueNameTextView.clearFocus();
         }
+
+
 
         @OnClick(R.id.join_queue_btn)
         public void joinQueueButtonPressed() {
             this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
             this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
             viewFlipper.setDisplayedChild(1);
+            joinQueueTextView.clearFocus();
         }
 
         public EnterQueueViewHolder(View view, EnterRoomActivity referenceContext){
@@ -161,18 +165,23 @@ public class EnterRoomActivity extends Activity{
                     R.anim.fade_in));
             viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(activity,
                     R.anim.fade_out));
+            newQueueNameTextView.setMaxLength(25);
+            newQueueNameTextView.setMaxLines(1);
+
+            joinQueueTextView.setMaxLength(25);
+            joinQueueTextView.setMaxLines(1);
         }
     }
 
     public void joinPlaylistWithID(String id) {
-        final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(id);
-        if(playlist != null && !TextUtils.isEmpty(playlist.id)) {
+//        final MusicQPlayList playlist = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(id);
+//        if(playlist != null && !TextUtils.isEmpty(playlist.id)) {
             SharedPreferences sharedPreferences = getSharedPreferences(EnterRoomActivity.this.getPackageName(), MODE_PRIVATE);
-            sharedPreferences.edit().putString("currentPlaylistID", playlist.id).apply();
+            sharedPreferences.edit().putString("currentPlaylistID", id).apply();
             goToMainActivity();
-        } else {
-            Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + id, Toast.LENGTH_SHORT).show();
-        }
+//        } else {
+//            Toast.makeText(EnterRoomActivity.this, "Unable to find playlist " + id, Toast.LENGTH_SHORT).show();
+//        }
     }
 
     public void createPlaylistWithName(String name) {

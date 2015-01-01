@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.haystack.saifkhan.haystack.uI.MaxLengthTextView
                 android:id="@+id/new_queue_text_view"
                 style="@style/FancyText"
                 android:layout_width="fill_parent"
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.haystack.saifkhan.haystack.uI.MaxLengthTextView
                 android:id="@+id/join_queue_text_view"
                 style="@style/FancyText"
                 android:layout_width="fill_parent"

@@ -1,5 +1,6 @@
 package com.haystack.saifkhan.haystack.uI;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -129,13 +130,17 @@ public class YoutubePlayerFragment extends Fragment {
                 try {
                     mPlaylist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);
                     mSongAdapter.setSongs(mPlaylist.songs);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSongAdapter.notifyDataSetChanged();
-                            mHolder.swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
+                    Activity activity = getActivity();
+                    if(activity != null) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSongAdapter.notifyDataSetChanged();
+                                mHolder.swipeRefreshLayout.setRefreshing(false);
+
+                            }
+                        });
+                    }
                     Timber.v("loaded playlist with id " + mPlaylist.id);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -145,13 +150,17 @@ public class YoutubePlayerFragment extends Fragment {
 
             @Override
             public void didFailWithMessage(final String message) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHolder.swipeRefreshLayout.setRefreshing(false);
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                Activity activity = getActivity();
+                if(activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
             }
         }, getActivity());
     }
