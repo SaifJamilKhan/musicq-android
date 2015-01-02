@@ -128,8 +128,6 @@ public class YoutubePlayerFragment extends Fragment {
 //        mHolder.songListView.setEmptyView(mHolder.emptyTextView);
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
-
-
         return rootView;
     }
 
@@ -155,7 +153,7 @@ public class YoutubePlayerFragment extends Fragment {
     private void syncCurrentPlaylist() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
         String currentPlaylistID = sharedPreferences.getString("currentPlaylistID", "");
-        loadCurrentSong(currentPlaylistID);
+        loadCurrentSongs(currentPlaylistID);
 
         NetworkUtils.showPlaylist(currentPlaylistID, new NetworkUtils.NetworkCallListener() {
             @Override
@@ -177,7 +175,7 @@ public class YoutubePlayerFragment extends Fragment {
             public void didSucceedWithJson(JSONObject body) {
                 Gson gson = new Gson();
                 try {
-                    mPlaylist = gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class);
+                    setPlaylist(gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class));
                     mSongAdapter.setSongs(mPlaylist.songs);
                     Activity activity = getActivity();
                     if(activity != null) {
@@ -217,12 +215,24 @@ public class YoutubePlayerFragment extends Fragment {
         }, getActivity());
     }
 
-    private void loadCurrentSong(String playlistID) {
+    private void setPlaylist(MusicQPlayList playlist) {
+        mPlaylist = playlist;
+        if(getActivity() != null) {
+         getActivity().runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share With Code " + mPlaylist.id);
+             }
+         });
+        }
+    }
+
+    private void loadCurrentSongs(String playlistID) {
         HashMap playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
         if(playlists != null && playlists.size() > 0) {
             MusicQPlayList playlist = (MusicQPlayList) playlists.get(playlistID);
             if(playlist != null) {
-                mPlaylist = playlist;
+                setPlaylist(playlist);
                 mSongAdapter.setSongs(mPlaylist.songs);
                 Activity activity = getActivity();
                 if (activity != null) {
@@ -612,6 +622,9 @@ public class YoutubePlayerFragment extends Fragment {
 
         @InjectView(R.id.swipe_refresh)
         ListviewSwipeRefreshLayout swipeRefreshLayout;
+
+        @InjectView(R.id.playlist_title_text_view)
+        TextView playlistTitleTextView;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

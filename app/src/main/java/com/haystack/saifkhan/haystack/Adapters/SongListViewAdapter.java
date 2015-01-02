@@ -77,11 +77,9 @@ public class SongListViewAdapter extends BaseAdapter{
         holder.addSongTextview.setVisibility(mShouldEnableAdding ? View.VISIBLE : View.GONE);
         if(mCurrentPlayingSong != null) {
             if (i == mCurrentPlayingSong) {
-                view.setBackgroundResource(R.color.current_playing_song);
-            } else if (i < mCurrentPlayingSong) {
-                view.setBackgroundResource(R.color.already_played_song);
+                view.setBackgroundResource(R.color.musicq_deepest_red);
             } else {
-                view.setBackgroundResource(R.color.upcoming_song);
+                view.setBackgroundResource(R.color.black);
             }
         }
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
