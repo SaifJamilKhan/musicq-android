@@ -103,8 +103,10 @@ public class NetworkUtils {
             public void didSucceedWithJson(JSONObject body) {
                 Gson gson = new Gson();
                 try {
-
                     JSONArray playlistJSONArray = body.getJSONArray("playlists");
+                    SharedPreferences.Editor sharedPrefEditor = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE ).edit();
+                    sharedPrefEditor.putString( "mostRecentPlaylists", playlistJSONArray.toString()).apply();
+
                     for (int x = 0; x < playlistJSONArray.length(); x++) {
                         JSONObject object = playlistJSONArray.getJSONObject(x);
 

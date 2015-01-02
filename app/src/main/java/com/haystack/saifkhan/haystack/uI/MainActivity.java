@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                mYoutubePlayer = youTubePlayer;
-               mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+               mYoutubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                mYoutubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                    @Override
                    public void onLoading() {
@@ -119,6 +119,11 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
         if(mYoutubePlayer != null) {
             mYoutubePlayer.loadVideo(song.getSourceID());
         }
+    }
+
+    @Override
+    public void didPressAddButton() {
+        mViewPager.setCurrentItem(1);
     }
 
     @Override

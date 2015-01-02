@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
@@ -37,6 +38,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,6 +60,7 @@ import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -72,7 +75,7 @@ public class YoutubePlayerFragment extends Fragment {
     private QueuePlayControlsListener mPlayControlsListener;
 
     public void scrollToBottom() {
-        mHolder.songListView.setSelection(mSongAdapter.getCount()-1);
+        mHolder.songListView.setSelection(mSongAdapter.getCount() - 1);
 //        View view = mHolder.songListView.getChildAt(mHolder.songListView.getLastVisiblePosition());
 //        if(view != null) {
 //            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.scale_big_then_small);
@@ -81,7 +84,7 @@ public class YoutubePlayerFragment extends Fragment {
     }
 
     public void playNextVideo() {
-        if((mSongAdapter.getCurrentQueItem() + 1) != mSongAdapter.getCount()) {
+        if ((mSongAdapter.getCurrentQueItem() + 1) != mSongAdapter.getCount()) {
             mSongAdapter.setCurrentQueItem(mSongAdapter.getCurrentQueItem() + 1);
             indicateDidPressPlay(mSongAdapter.getCurrentQueItem());
             mSongAdapter.setCurrentQueItem(mSongAdapter.getCurrentQueItem());
@@ -91,6 +94,8 @@ public class YoutubePlayerFragment extends Fragment {
 
     public static interface QueuePlayControlsListener {
         public void didPressPlay(MusicQSong song);
+
+        public void didPressAddButton();
     }
 
     @Override
@@ -98,7 +103,7 @@ public class YoutubePlayerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_play, container, false);
         mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
-        mHolder = new ViewHolder(rootView);
+        mHolder = new ViewHolder(rootView, this);
         mHolder.emptyTextView.setText("SWIPE RIGHT TO ADD SONGS AND PULL DOWN TO REFRESH");
         mHolder.songListView.setAdapter(mSongAdapter);
         mHolder.songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,13 +137,24 @@ public class YoutubePlayerFragment extends Fragment {
     }
 
     private void indicateDidPressPlay(int i) {
-        if(mPlayControlsListener == null && getActivity() != null) {
-            if(getActivity() instanceof QueuePlayControlsListener) {
+        checkForListener();
+        if (mPlayControlsListener != null) {
+            mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(i));
+        }
+    }
+
+    public void indicateDidPressAddButton() {
+        checkForListener();
+        if (mPlayControlsListener != null) {
+            mPlayControlsListener.didPressAddButton();
+        }
+    }
+
+    private void checkForListener() {
+        if (mPlayControlsListener == null && getActivity() != null) {
+            if (getActivity() instanceof QueuePlayControlsListener) {
                 mPlayControlsListener = (QueuePlayControlsListener) getActivity();
             }
-        }
-        if(mPlayControlsListener != null) {
-            mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(i));
         }
     }
 
@@ -159,7 +175,7 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void didSucceed() {
                 Activity activity = getActivity();
-                if(activity != null) {
+                if (activity != null) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -178,7 +194,7 @@ public class YoutubePlayerFragment extends Fragment {
                     setPlaylist(gson.fromJson(body.getJSONObject("playlist").toString(), MusicQPlayList.class));
                     mSongAdapter.setSongs(mPlaylist.songs);
                     Activity activity = getActivity();
-                    if(activity != null) {
+                    if (activity != null) {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -199,7 +215,7 @@ public class YoutubePlayerFragment extends Fragment {
             @Override
             public void didFailWithMessage(final String message) {
                 Activity activity = getActivity();
-                if(activity != null) {
+                if (activity != null) {
                     activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -217,21 +233,48 @@ public class YoutubePlayerFragment extends Fragment {
 
     private void setPlaylist(MusicQPlayList playlist) {
         mPlaylist = playlist;
-        if(getActivity() != null) {
-         getActivity().runOnUiThread(new Runnable() {
-             @Override
-             public void run() {
-                mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share With Code " + mPlaylist.id);
-             }
-         });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share With Code " + mPlaylist.id);
+                }
+            });
         }
     }
 
     private void loadCurrentSongs(String playlistID) {
         HashMap playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
-        if(playlists != null && playlists.size() > 0) {
+        if (playlists == null || playlists.size() == 0) {
+            SharedPreferences sharedPrefEditor = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+            String jsonString = sharedPrefEditor.getString("mostRecentPlaylists", "");
+            if(!TextUtils.isEmpty(jsonString)) {
+                Timber.v(jsonString + "saif");
+                JSONArray jsonArray;
+                try {
+                    Gson gson = new Gson();
+                    jsonArray = new JSONArray(jsonString);
+
+                    for (int x = 0; x < jsonArray.length(); x++) {
+                        JSONObject object = jsonArray.getJSONObject(x);
+
+                        final MusicQPlayList playlist = gson.fromJson(object.toString(), MusicQPlayList.class);
+                        if (!TextUtils.isEmpty(playlist.id)) {
+                            DatabaseManager.getDatabaseManager().addObject(playlist);
+                        } else {
+                            Timber.v("");
+                        }
+                    }
+                    playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Timber.v(e.getMessage() + "saif");
+                }
+            }
+        }
+        if (playlists != null && playlists.size() > 0) {
             MusicQPlayList playlist = (MusicQPlayList) playlists.get(playlistID);
-            if(playlist != null) {
+            if (playlist != null) {
                 setPlaylist(playlist);
                 mSongAdapter.setSongs(mPlaylist.songs);
                 Activity activity = getActivity();
@@ -317,52 +360,52 @@ public class YoutubePlayerFragment extends Fragment {
         }
     }
 
-    private void getMP4(String url){
+    private void getMP4(String url) {
         URL u = null;
         InputStream is = null;
 
         try {
             u = new URL(url);
             is = u.openStream();
-            HttpURLConnection huc = (HttpURLConnection)u.openConnection();//to know the size of video
+            HttpURLConnection huc = (HttpURLConnection) u.openConnection();//to know the size of video
             int size = huc.getContentLength();
             Log.v("saif", "saif size is " + size);
 
-            if(huc != null){
+            if (huc != null) {
                 String fileName = "FILE.mp4";
                 String storagePath = Environment.getExternalStorageDirectory().toString();
-                File f = new File(storagePath,fileName);
+                File f = new File(storagePath, fileName);
 
                 FileOutputStream fos = new FileOutputStream(f);
                 byte[] buffer = new byte[1024];
                 int len1 = 0;
-                if(is != null){
+                if (is != null) {
                     while ((len1 = is.read(buffer)) > 0) {
-                        fos.write(buffer,0, len1);
+                        fos.write(buffer, 0, len1);
                     }
                 }
-                if(fos != null){
+                if (fos != null) {
                     fos.close();
                 }
             }
-        }catch (MalformedURLException mue) {
+        } catch (MalformedURLException mue) {
             mue.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
-                try {
-                if(is != null){
+            try {
+                if (is != null) {
                     is.close();
                     Log.v("saif", "saif closed");
                 }
-            }catch (IOException ioe) {
+            } catch (IOException ioe) {
                 // just going to ignore this one
             }
         }
 
     }
 
-//    http://stackoverflow.com/questions/15240011/get-the-download-url-for-youtube-video-android-java?lq=1
+    //    http://stackoverflow.com/questions/15240011/get-the-download-url-for-youtube-video-android-java?lq=1
     class Meta {
         public String num;
         public String type;
@@ -463,7 +506,7 @@ public class YoutubePlayerFragment extends Fragment {
             } else {
                 Pattern p3 = Pattern.compile("sig=(.*?)[&]");
                 Matcher m3 = p3.matcher(url);
-                if(m3.find()) {
+                if (m3.find()) {
                     sig = m3.group(1);
                 }
             }
@@ -608,8 +651,12 @@ public class YoutubePlayerFragment extends Fragment {
     }
 
     static class ViewHolder {
+        private final YoutubePlayerFragment fragment;
         @InjectView(R.id.loading_spinner)
         View loadingSpinner;
+
+        @InjectView(R.id.add_circle_button)
+        CustomFAB circleFABButton;
 
         @InjectView(R.id.loading_spinner_image_view)
         View loadingSpinnerImageView;
@@ -626,8 +673,14 @@ public class YoutubePlayerFragment extends Fragment {
         @InjectView(R.id.playlist_title_text_view)
         TextView playlistTitleTextView;
 
-        public ViewHolder(View view) {
+        @OnClick(R.id.add_circle_button)
+        public void addPressed(View view) {
+            fragment.indicateDidPressAddButton();
+        }
+
+        public ViewHolder(View view, YoutubePlayerFragment fragment) {
             ButterKnife.inject(this, view);
+            this.fragment = fragment;
         }
     }
 }
