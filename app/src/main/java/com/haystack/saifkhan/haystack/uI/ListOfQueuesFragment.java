@@ -3,8 +3,11 @@ package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
 import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQSong;
@@ -23,6 +27,8 @@ import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -120,6 +126,7 @@ public class ListOfQueuesFragment extends Fragment {
             public void didFailWithMessage(String message) {
                 Timber.e(message);
                 stopSpinner();
+                loadPlaylistsFromDatabase();
                 mHolder.swipeRefreshLayout.setRefreshing(false);
             }
         }, getActivity());
@@ -138,7 +145,34 @@ public class ListOfQueuesFragment extends Fragment {
     }
 
     private void loadPlaylistsFromDatabase() {
-        HashMap<String, MusicQPlayList> playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+        HashMap playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+        if (playlists == null || playlists.size() == 0) {
+            SharedPreferences sharedPrefEditor = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+            String jsonString = sharedPrefEditor.getString("mostRecentPlaylists", "");
+            if(!TextUtils.isEmpty(jsonString)) {
+                Timber.v(jsonString + "saif");
+                JSONArray jsonArray;
+                try {
+                    Gson gson = new Gson();
+                    jsonArray = new JSONArray(jsonString);
+
+                    for (int x = 0; x < jsonArray.length(); x++) {
+                        JSONObject object = jsonArray.getJSONObject(x);
+
+                        final MusicQPlayList playlist = gson.fromJson(object.toString(), MusicQPlayList.class);
+                        if (!TextUtils.isEmpty(playlist.id)) {
+                            DatabaseManager.getDatabaseManager().addObject(playlist);
+                        } else {
+                            Timber.v("");
+                        }
+                    }
+                    playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Timber.v(e.getMessage() + "saif");
+                }
+            }
+        }
         if ((playlists != null && playlists.size() > 0) && mHolder.gridView.getChildCount() != playlists.size()) {
             mQueuesAdapter.setQueues(new ArrayList<MusicQPlayList>(playlists.values()));
             mQueuesAdapter.notifyDataSetChanged();

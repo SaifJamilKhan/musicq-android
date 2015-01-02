@@ -213,7 +213,7 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
                                 @Override
                                 public void run() {
                                     stopSpinner();
-                                    Toast.makeText(EnterRoomActivity.this, "Creates playlist with id " + playlist.id, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(EnterRoomActivity.this, "Created playlist with id " + playlist.id, Toast.LENGTH_SHORT).show();
                                     DatabaseManager.getDatabaseManager().addObject(playlist);
                                     goToMainActivity();
                                 }

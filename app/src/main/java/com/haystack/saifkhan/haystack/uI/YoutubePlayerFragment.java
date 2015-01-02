@@ -237,7 +237,7 @@ public class YoutubePlayerFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share With Code " + mPlaylist.id);
+                    mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share Code: " + mPlaylist.id);
                 }
             });
         }
@@ -245,33 +245,6 @@ public class YoutubePlayerFragment extends Fragment {
 
     private void loadCurrentSongs(String playlistID) {
         HashMap playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
-        if (playlists == null || playlists.size() == 0) {
-            SharedPreferences sharedPrefEditor = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
-            String jsonString = sharedPrefEditor.getString("mostRecentPlaylists", "");
-            if(!TextUtils.isEmpty(jsonString)) {
-                Timber.v(jsonString + "saif");
-                JSONArray jsonArray;
-                try {
-                    Gson gson = new Gson();
-                    jsonArray = new JSONArray(jsonString);
-
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        JSONObject object = jsonArray.getJSONObject(x);
-
-                        final MusicQPlayList playlist = gson.fromJson(object.toString(), MusicQPlayList.class);
-                        if (!TextUtils.isEmpty(playlist.id)) {
-                            DatabaseManager.getDatabaseManager().addObject(playlist);
-                        } else {
-                            Timber.v("");
-                        }
-                    }
-                    playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Timber.v(e.getMessage() + "saif");
-                }
-            }
-        }
         if (playlists != null && playlists.size() > 0) {
             MusicQPlayList playlist = (MusicQPlayList) playlists.get(playlistID);
             if (playlist != null) {
