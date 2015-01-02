@@ -36,6 +36,7 @@ import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.R;
 import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
+import com.haystack.saifkhan.haystack.Utils.ViewUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,17 +151,15 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
             this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
             this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
             viewFlipper.setDisplayedChild(0);
-            newQueueNameTextView.clearFocus();
+            ViewUtils.hideKeyboardFromTextview(newQueueNameTextView, activity);
         }
-
-
 
         @OnClick(R.id.join_queue_btn)
         public void joinQueueButtonPressed() {
             this.newQueueButton.setTextColor(activity.getResources().getColor(R.color.text_light_gray));
             this.joinQueueButton.setTextColor(activity.getResources().getColor(R.color.musicq_deep_red));
             viewFlipper.setDisplayedChild(1);
-            joinQueueTextView.clearFocus();
+            ViewUtils.hideKeyboardFromTextview(joinQueueTextView, activity);
         }
 
         public EnterQueueViewHolder(View view, EnterRoomActivity referenceContext){

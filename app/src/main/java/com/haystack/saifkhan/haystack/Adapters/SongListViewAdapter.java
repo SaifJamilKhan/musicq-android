@@ -42,6 +42,9 @@ public class SongListViewAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
+        if(mSongs == null) {
+            mSongs = new ArrayList<MusicQSong>();
+        }
         return mSongs.size();
     }
 

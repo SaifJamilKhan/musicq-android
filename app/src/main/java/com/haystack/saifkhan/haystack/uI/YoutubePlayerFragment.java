@@ -16,9 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -76,13 +79,14 @@ public class YoutubePlayerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_play, container, false);
-        mHolder = new ViewHolder(rootView);
         mSongAdapter = new SongListViewAdapter(getActivity().getLayoutInflater(), getActivity(), false);
+        mHolder = new ViewHolder(rootView);
+        mHolder.emptyTextView.setText("SWIPE RIGHT TO ADD SONGS AND PULL DOWN TO REFRESH");
         mHolder.songListView.setAdapter(mSongAdapter);
         mHolder.songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(i));
+                indicateDidPressPlay(i);
                 mSongAdapter.setCurrentQueItem(i);
                 mSongAdapter.notifyDataSetChanged();
             }
@@ -98,10 +102,12 @@ public class YoutubePlayerFragment extends Fragment {
         mHolder.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                startSpinner();
                 syncCurrentPlaylist();
             }
         });
 
+//        mHolder.songListView.setEmptyView(mHolder.emptyTextView);
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
 
@@ -109,19 +115,44 @@ public class YoutubePlayerFragment extends Fragment {
         return rootView;
     }
 
+    private void indicateDidPressPlay(int i) {
+        if(mPlayControlsListener == null && getActivity() != null) {
+            if(getActivity() instanceof QueuePlayControlsListener) {
+                mPlayControlsListener = (QueuePlayControlsListener) getActivity();
+            }
+        }
+        if(mPlayControlsListener != null) {
+            mPlayControlsListener.didPressPlay((MusicQSong) mSongAdapter.getItem(i));
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+        startSpinner();
         syncCurrentPlaylist();
+        mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private void syncCurrentPlaylist() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getActivity().getPackageName(), Context.MODE_PRIVATE);
+        String currentPlaylistID = sharedPreferences.getString("currentPlaylistID", "");
+        loadCurrentSong(currentPlaylistID);
 
-        NetworkUtils.showPlaylist(sharedPreferences.getString("currentPlaylistID", ""), new NetworkUtils.NetworkCallListener() {
+        NetworkUtils.showPlaylist(currentPlaylistID, new NetworkUtils.NetworkCallListener() {
             @Override
             public void didSucceed() {
-                stopSpinner();
+                Activity activity = getActivity();
+                if(activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            stopSpinner();
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
+                            mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -137,15 +168,16 @@ public class YoutubePlayerFragment extends Fragment {
                             public void run() {
                                 mSongAdapter.notifyDataSetChanged();
                                 mHolder.swipeRefreshLayout.setRefreshing(false);
-
+                                stopSpinner();
+                                mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
                             }
                         });
                     }
+                    DatabaseManager.getDatabaseManager().addObject(mPlaylist);
                     Timber.v("loaded playlist with id " + mPlaylist.id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                stopSpinner();
             }
 
             @Override
@@ -156,7 +188,9 @@ public class YoutubePlayerFragment extends Fragment {
                         @Override
                         public void run() {
                             mHolder.swipeRefreshLayout.setRefreshing(false);
+                            stopSpinner();
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
 
                         }
                     });
@@ -165,14 +199,31 @@ public class YoutubePlayerFragment extends Fragment {
         }, getActivity());
     }
 
+    private void loadCurrentSong(String playlistID) {
+        HashMap playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
+        if(playlists != null && playlists.size() > 0) {
+            MusicQPlayList playlist = (MusicQPlayList) playlists.get(playlistID);
+            if(playlist != null) {
+                mPlaylist = playlist;
+                mSongAdapter.setSongs(mPlaylist.songs);
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSongAdapter.notifyDataSetChanged();
+                            stopSpinner();
+                            mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     public void setPlayControlsListener(QueuePlayControlsListener listener) {
         mPlayControlsListener = listener;
     }
-
-    private void stopSpinner() {
-
-    }
-
 
     protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {
         @Override
@@ -517,10 +568,26 @@ public class YoutubePlayerFragment extends Fragment {
         }
     }
 
+    private void startSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fast_rotator);
+        mHolder.loadingSpinnerImageView.startAnimation(animation);
+    }
 
-
+    private void stopSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.GONE);
+        mHolder.loadingSpinnerImageView.clearAnimation();
+    }
 
     static class ViewHolder {
+        @InjectView(R.id.loading_spinner)
+        View loadingSpinner;
+
+        @InjectView(R.id.loading_spinner_image_view)
+        View loadingSpinnerImageView;
+
+        @InjectView(R.id.emptyTextView)
+        public TextView emptyTextView;
 
         @InjectView(R.id.songs_list_view)
         ListView songListView;

@@ -2,23 +2,34 @@ package com.haystack.saifkhan.haystack.uI;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.haystack.saifkhan.haystack.Adapters.SongListViewAdapter;
+import com.haystack.saifkhan.haystack.Models.MusicQPlayList;
 import com.haystack.saifkhan.haystack.Models.MusicQSong;
 import com.haystack.saifkhan.haystack.R;
+import com.haystack.saifkhan.haystack.Utils.DatabaseManager;
 import com.haystack.saifkhan.haystack.Utils.NetworkUtils;
+import com.haystack.saifkhan.haystack.Utils.ViewUtils;
 import com.haystack.saifkhan.haystack.Utils.YoutubeNetworkUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -52,13 +63,16 @@ public class YoutubeSearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_youtube_search, container, false);
         mHolder = new ViewHolder(rootView);
-        mHolder.searchBtn.setOnClickListener(new View.OnClickListener() {
+        mHolder.searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                YoutubeTask task = new YoutubeTask();
-                task.execute(getActivity());
-
-
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    YoutubeTask task = new YoutubeTask();
+                    task.execute(getActivity());
+                    ViewUtils.hideKeyboardFromTextview(v, getActivity());
+                    return true;
+                }
+                return false;
             }
         });
         if(mSongAdapter == null) {
@@ -85,6 +99,22 @@ public class YoutubeSearchFragment extends Fragment {
             @Override
             public void didSucceedWithJson(JSONObject body) {
 
+                Gson gson = new Gson();
+                try {
+                    final MusicQSong musicQSong = gson.fromJson(body.getJSONObject("video").toString(), MusicQSong.class);
+                    if(!TextUtils.isEmpty(musicQSong.id) && !TextUtils.isEmpty(musicQSong.playlistID)) {
+                        MusicQPlayList playList = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(musicQSong.playlistID);
+                        if(playList.songs == null || playList.songs.size() == 0 || !playList.songs.get(playList.songs.size() -1).id.equals(musicQSong.getId())) {
+                            if(playList.songs == null) {
+                                playList.songs = new ArrayList<MusicQSong>();
+                            }
+                            playList.songs.add(musicQSong);
+                        }
+                        DatabaseManager.getDatabaseManager().addObject(playList);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -147,8 +177,6 @@ public class YoutubeSearchFragment extends Fragment {
     static class ViewHolder {
         @InjectView(R.id.search_bar)
         EditText searchBar;
-        @InjectView(R.id.youtube_search_btn)
-        Button searchBtn;
         @InjectView(R.id.youtube_search_results_list_view)
         ListView youtubeListView;
 
