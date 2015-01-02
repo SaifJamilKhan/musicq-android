@@ -308,33 +308,33 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
     @Nullable
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
-        NetworkUtils.getAllPlaylists(new NetworkUtils.NetworkCallListener() {
-            @Override
-            public void didSucceed() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        loadPlaylistsFromDatabase();
-                    }
-                });
-            }
-
-            @Override
-            public void didSucceedWithJson(JSONObject body) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        loadPlaylistsFromDatabase();
-                    }
-                });
-            }
-
-            @Override
-            public void didFailWithMessage(String message) {
-                Timber.e(message);
-
-            }
-        }, this);
+//        NetworkUtils.getAllPlaylists(new NetworkUtils.NetworkCallListener() {
+//            @Override
+//            public void didSucceed() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        loadPlaylistsFromDatabase();
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void didSucceedWithJson(JSONObject body) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        loadPlaylistsFromDatabase();
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void didFailWithMessage(String message) {
+//                Timber.e(message);
+//
+//            }
+//        }, this);
         return super.onCreateView(name, context, attrs);
     }
 

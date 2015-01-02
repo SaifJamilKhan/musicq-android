@@ -81,7 +81,7 @@ public class NetworkUtils {
     }
 
     public static void createPlaylist(final MusicQPlayList playlistRequest, NetworkCallListener listener, Context context) {
-        new CreateObjectTask(playlistRequest, listener, playlistPath, context).execute("");
+        new CreateObjectTask(playlistRequest, listener, playlistPath, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
     }
 
     public static void createVideo(final MusicQSong songRequest, NetworkCallListener listener, Context context) {
