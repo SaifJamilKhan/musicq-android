@@ -50,6 +50,37 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                mYoutubePlayer = youTubePlayer;
+               mYoutubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                   @Override
+                   public void onLoading() {
+
+                   }
+
+                   @Override
+                   public void onLoaded(String s) {
+
+                   }
+
+                   @Override
+                   public void onAdStarted() {
+
+                   }
+
+                   @Override
+                   public void onVideoStarted() {
+
+                   }
+
+                   @Override
+                   public void onVideoEnded() {
+                       mYoutubePlayerFragment.playNextVideo();
+                   }
+
+                   @Override
+                   public void onError(YouTubePlayer.ErrorReason errorReason) {
+
+                   }
+               });
             }
 
             @Override

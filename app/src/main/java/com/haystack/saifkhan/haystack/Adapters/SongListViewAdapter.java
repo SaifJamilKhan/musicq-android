@@ -92,6 +92,10 @@ public class SongListViewAdapter extends BaseAdapter{
         mCurrentPlayingSong = i;
     }
 
+    public int getCurrentQueItem() {
+        return mCurrentPlayingSong;
+    }
+
     public static class SongViewHolder {
         @InjectView(R.id.song_title)
         TextView titleView;

@@ -80,6 +80,15 @@ public class YoutubePlayerFragment extends Fragment {
 //        }
     }
 
+    public void playNextVideo() {
+        if((mSongAdapter.getCurrentQueItem() + 1) != mSongAdapter.getCount()) {
+            mSongAdapter.setCurrentQueItem(mSongAdapter.getCurrentQueItem() + 1);
+            indicateDidPressPlay(mSongAdapter.getCurrentQueItem());
+            mSongAdapter.setCurrentQueItem(mSongAdapter.getCurrentQueItem());
+            mSongAdapter.notifyDataSetChanged();
+        }
+    }
+
     public static interface QueuePlayControlsListener {
         public void didPressPlay(MusicQSong song);
     }
