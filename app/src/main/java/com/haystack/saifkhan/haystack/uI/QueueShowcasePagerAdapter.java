@@ -11,13 +11,13 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 public class QueueShowcasePagerAdapter extends FragmentStatePagerAdapter {
 
 
-    private EnterRoomActivity.PlaylistSelectListener playlistSelectListener;
+    private ListOfQueuesFragment.PlaylistSelectListener playlistSelectListener;
 
     public QueueShowcasePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public QueueShowcasePagerAdapter(FragmentManager fragmentManager, EnterRoomActivity.PlaylistSelectListener playlistSelectListener) {
+    public QueueShowcasePagerAdapter(FragmentManager fragmentManager, ListOfQueuesFragment.PlaylistSelectListener playlistSelectListener) {
         super(fragmentManager);
         this.playlistSelectListener = playlistSelectListener;
     }

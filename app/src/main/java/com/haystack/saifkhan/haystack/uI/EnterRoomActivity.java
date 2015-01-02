@@ -50,7 +50,7 @@ import timber.log.Timber;
 /**
  * Created by saifkhan on 2014-10-28.
  */
-public class EnterRoomActivity extends Activity{
+public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.PlaylistSelectListener {
 
     @InjectView(R.id.pager)
     ViewPager pager;
@@ -109,6 +109,11 @@ public class EnterRoomActivity extends Activity{
 //            circleFABButton.rotateBackward();
 //            popWindow.dismiss();
 //        }
+    }
+
+    @Override
+    public void didSelectPlaylistWithId(String id) {
+        joinPlaylistWithID(id);
     }
 
     public static class EnterQueueViewHolder {
@@ -259,12 +264,7 @@ public class EnterRoomActivity extends Activity{
                 return true;
             }
         });
-        mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager(), new PlaylistSelectListener() {
-            @Override
-            public void didSelectPlaylistWithId(String id) {
-                EnterRoomActivity.this.joinPlaylistWithID(id);
-            }
-        });
+        mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager(), EnterRoomActivity.this);
         pager.setAdapter(mQueuesAdapter);
 
         final ActionBar actionBar = getActionBar();
@@ -306,9 +306,6 @@ public class EnterRoomActivity extends Activity{
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
     }
 
-    public static abstract class PlaylistSelectListener {
-        public abstract void didSelectPlaylistWithId(String id);
-    }
     @Nullable
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {

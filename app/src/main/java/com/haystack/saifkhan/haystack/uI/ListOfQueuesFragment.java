@@ -40,7 +40,7 @@ public class ListOfQueuesFragment extends Fragment {
     public static final String SELECT_LISTENER = "SELECTED_LISTENER";
     private ViewHolder mHolder;
     private QueueGridAdapter mQueuesAdapter;
-    private EnterRoomActivity.PlaylistSelectListener playlistSelectListener;
+    private PlaylistSelectListener playlistSelectListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +67,11 @@ public class ListOfQueuesFragment extends Fragment {
         mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(playlistSelectListener == null && getActivity() != null) {
+                    if(getActivity() instanceof PlaylistSelectListener) {
+                        playlistSelectListener = (PlaylistSelectListener) getActivity();
+                    }
+                }
                 if(playlistSelectListener != null) {
                     playlistSelectListener.didSelectPlaylistWithId(((MusicQPlayList) mQueuesAdapter.getItem(i)).id);
                 }
@@ -142,7 +147,7 @@ public class ListOfQueuesFragment extends Fragment {
         }
     }
 
-    public void setPlaylistSelectListener(EnterRoomActivity.PlaylistSelectListener playlistSelectListener) {
+    public void setPlaylistSelectListener(PlaylistSelectListener playlistSelectListener) {
         this.playlistSelectListener = playlistSelectListener;
     }
 
@@ -176,5 +181,9 @@ public class ListOfQueuesFragment extends Fragment {
         public ViewHolder(View rootView) {
             ButterKnife.inject(this, rootView);
         }
+    }
+
+    public static interface PlaylistSelectListener {
+        public void didSelectPlaylistWithId(String id);
     }
 }
