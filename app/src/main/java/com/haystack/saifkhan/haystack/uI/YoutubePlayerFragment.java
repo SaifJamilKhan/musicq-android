@@ -71,6 +71,10 @@ public class YoutubePlayerFragment extends Fragment {
     private SongListViewAdapter mSongAdapter;
     private QueuePlayControlsListener mPlayControlsListener;
 
+    public void scrollToBottom() {
+        mHolder.songListView.setSelection(mSongAdapter.getCount()-1);
+    }
+
     public static interface QueuePlayControlsListener {
         public void didPressPlay(MusicQSong song);
     }

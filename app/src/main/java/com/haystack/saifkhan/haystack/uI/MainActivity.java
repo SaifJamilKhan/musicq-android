@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class MainActivity extends Activity implements YoutubePlayerFragment.QueuePlayControlsListener {
+public class MainActivity extends Activity implements YoutubePlayerFragment.QueuePlayControlsListener, YoutubeSearchFragment.AddSongListener {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -87,6 +87,12 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
         if(mYoutubePlayer != null) {
             mYoutubePlayer.loadVideo(song.getSourceID());
         }
+    }
+
+    @Override
+    public void didAddSong() {
+        mViewPager.setCurrentItem(0);
+        mYoutubePlayerFragment.scrollToBottom();
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

@@ -1,5 +1,6 @@
 package com.haystack.saifkhan.haystack.uI;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -47,6 +50,9 @@ public class YoutubeSearchFragment extends Fragment {
     private ViewHolder mHolder;
     private SongListViewAdapter mSongAdapter;
 
+    public static interface AddSongListener {
+        public void didAddSong();
+    }
     public static YoutubeSearchFragment newInstance(int sectionNumber) {
         YoutubeSearchFragment fragment = new YoutubeSearchFragment();
         Bundle args = new Bundle();
@@ -84,6 +90,33 @@ public class YoutubeSearchFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 MusicQSong song = (MusicQSong) mSongAdapter.getItem(i);
                 addSong(song);
+                View cellView = mHolder.youtubeListView.getChildAt(i - mHolder.youtubeListView.getFirstVisiblePosition());
+                if(cellView != null) {
+                    Activity activity = getActivity();
+                    if(activity != null) {
+                        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.swipe_left);
+                        cellView.startAnimation(animation);
+                        animation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                Activity activity = YoutubeSearchFragment.this.getActivity();
+                                if(activity instanceof AddSongListener) {
+                                    ((AddSongListener) activity).didAddSong();
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    }
+                }
             }
         });
         return rootView;
