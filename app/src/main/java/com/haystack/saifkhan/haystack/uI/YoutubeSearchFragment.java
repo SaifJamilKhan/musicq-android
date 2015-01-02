@@ -49,6 +49,7 @@ public class YoutubeSearchFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private ViewHolder mHolder;
     private SongListViewAdapter mSongAdapter;
+    private Animation mLeftSwipeAnimation;
 
     public static interface AddSongListener {
         public void didAddSong();
@@ -76,6 +77,7 @@ public class YoutubeSearchFragment extends Fragment {
                     YoutubeTask task = new YoutubeTask();
                     task.execute(getActivity());
                     ViewUtils.hideKeyboardFromTextview(v, getActivity());
+                    startSpinner();
                     return true;
                 }
                 return false;
@@ -88,15 +90,18 @@ public class YoutubeSearchFragment extends Fragment {
         mHolder.youtubeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mLeftSwipeAnimation != null && !mLeftSwipeAnimation.hasEnded()) {
+                    return;
+                }
                 MusicQSong song = (MusicQSong) mSongAdapter.getItem(i);
                 addSong(song);
                 View cellView = mHolder.youtubeListView.getChildAt(i - mHolder.youtubeListView.getFirstVisiblePosition());
-                if(cellView != null) {
+                if (cellView != null) {
                     Activity activity = getActivity();
-                    if(activity != null) {
-                        Animation animation = AnimationUtils.loadAnimation(activity, R.anim.swipe_left);
-                        cellView.startAnimation(animation);
-                        animation.setAnimationListener(new Animation.AnimationListener() {
+                    if (activity != null) {
+                        mLeftSwipeAnimation = AnimationUtils.loadAnimation(activity, R.anim.swipe_left);
+                        cellView.startAnimation(mLeftSwipeAnimation);
+                        mLeftSwipeAnimation.setAnimationListener(new Animation.AnimationListener() {
                             @Override
                             public void onAnimationStart(Animation animation) {
 
@@ -105,7 +110,7 @@ public class YoutubeSearchFragment extends Fragment {
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 Activity activity = YoutubeSearchFragment.this.getActivity();
-                                if(activity instanceof AddSongListener) {
+                                if (activity instanceof AddSongListener) {
                                     ((AddSongListener) activity).didAddSong();
                                 }
                             }
@@ -160,15 +165,16 @@ public class YoutubeSearchFragment extends Fragment {
     protected class YoutubeTask extends AsyncTask<Context, Integer, ArrayList> {
         @Override
         protected ArrayList doInBackground(Context... params) {
-            ArrayList response;
+            ArrayList response = new ArrayList();
             try {
-                response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString(), getActivity());
-                return response;
+                if(getActivity() != null) {
+                    response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString(), getActivity());
+                    return response;
+                }
             } catch (IOException e) {
                 response = null;
                 e.printStackTrace();
             }
-
             return response;
         }
 
@@ -194,6 +200,7 @@ public class YoutubeSearchFragment extends Fragment {
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
+                    stopSpinner();
                     setSongs(result);
                 }
             });
@@ -207,7 +214,24 @@ public class YoutubeSearchFragment extends Fragment {
         }
     }
 
+    private void startSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.fast_rotator);
+        mHolder.loadingSpinnerImageView.startAnimation(animation);
+    }
+
+    private void stopSpinner() {
+        mHolder.loadingSpinner.setVisibility(View.GONE);
+        mHolder.loadingSpinnerImageView.clearAnimation();
+    }
+
     static class ViewHolder {
+        @InjectView(R.id.loading_spinner)
+        View loadingSpinner;
+
+        @InjectView(R.id.loading_spinner_image_view)
+        View loadingSpinnerImageView;
+
         @InjectView(R.id.search_bar)
         EditText searchBar;
         @InjectView(R.id.youtube_search_results_list_view)

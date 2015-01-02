@@ -13,22 +13,25 @@
         android:gravity="center">
 
 
-        <EditText android:imeOptions="actionSearch"
+        <EditText
             android:id="@+id/search_bar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="Search Youtube"
-            android:lines="1"
+            android:imeOptions="actionSearch"
             android:inputType="text"
+            android:lines="1"
             android:textSize="20sp" />
 
     </LinearLayout>
 
     <ListView
         android:id="@+id/youtube_search_results_list_view"
-        android:layout_below="@id/search_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_bar_layout">
 
-     </ListView>
+    </ListView>
+
+    <include layout="@layout/loading_spinner" />
 </RelativeLayout>

@@ -73,6 +73,11 @@ public class YoutubePlayerFragment extends Fragment {
 
     public void scrollToBottom() {
         mHolder.songListView.setSelection(mSongAdapter.getCount()-1);
+//        View view = mHolder.songListView.getChildAt(mHolder.songListView.getLastVisiblePosition());
+//        if(view != null) {
+//            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.scale_big_then_small);
+//            view.startAnimation(animation);
+//        }
     }
 
     public static interface QueuePlayControlsListener {
