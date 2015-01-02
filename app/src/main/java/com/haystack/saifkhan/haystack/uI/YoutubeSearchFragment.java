@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * Created by saifkhan on 2014-10-28.
@@ -50,6 +51,7 @@ public class YoutubeSearchFragment extends Fragment {
     private ViewHolder mHolder;
     private SongListViewAdapter mSongAdapter;
     private Animation mLeftSwipeAnimation;
+    private YoutubeTask mYoutubeTask;
 
     public static interface AddSongListener {
         public void didAddSong();
@@ -74,8 +76,13 @@ public class YoutubeSearchFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    YoutubeTask task = new YoutubeTask();
-                    task.execute(getActivity());
+                    if(mYoutubeTask == null) {
+                        mYoutubeTask = new YoutubeTask();
+                    } else {
+                        mYoutubeTask.cancel(true);
+                        mYoutubeTask = new YoutubeTask();
+                    }
+                    mYoutubeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     ViewUtils.hideKeyboardFromTextview(v, getActivity());
                     startSpinner();
                     return true;
@@ -168,6 +175,7 @@ public class YoutubeSearchFragment extends Fragment {
             ArrayList response = new ArrayList();
             try {
                 if(getActivity() != null) {
+                    Timber.v("saif timing started search");
                     response = (ArrayList) YoutubeNetworkUtil.searchForVideosByTheName(mHolder.searchBar.getText().toString(), getActivity());
                     return response;
                 }
