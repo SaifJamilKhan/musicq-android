@@ -55,6 +55,7 @@
                 style="@style/FancyText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="1"
                 android:background="@drawable/textview_rounded_all_corners"
                 android:hint="@string/new_queue_name" />
 
@@ -83,6 +84,7 @@
             <com.haystack.saifkhan.haystack.uI.MaxLengthTextView
                 android:id="@+id/join_queue_text_view"
                 style="@style/FancyText"
+                android:maxLines="1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/textview_rounded_all_corners"
