@@ -56,6 +56,7 @@ public class ListOfQueuesFragment extends Fragment {
         mQueuesAdapter = new QueueGridAdapter(getActivity().getLayoutInflater(), getActivity());
         mHolder.gridView.setAdapter(mQueuesAdapter);
         setEmptyView();
+        startSpinner();
         getAllPlaylistsFromNetwork();
         mHolder.swipeRefreshLayout.setColorSchemeResources(
                 R.color.refresh_progress_1,
@@ -176,8 +177,6 @@ public class ListOfQueuesFragment extends Fragment {
         if ((playlists != null && playlists.size() > 0) && mHolder.gridView.getChildCount() != playlists.size()) {
             mQueuesAdapter.setQueues(new ArrayList<MusicQPlayList>(playlists.values()));
             mQueuesAdapter.notifyDataSetChanged();
-        } else {
-            startSpinner();
         }
     }
 
