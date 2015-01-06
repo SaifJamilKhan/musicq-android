@@ -20,6 +20,8 @@
             android:imeOptions="actionSearch"
             android:background="@color/black"
             android:textColor="@android:color/white"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:typeface="monospace"
             android:inputType="text"
             android:padding="8dp"

@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * Created by saifkhan on 2014-10-28.
  */
@@ -73,9 +75,12 @@ public class YoutubeNetworkUtil {
             song.setTitle(snippet.getTitle());
             ThumbnailDetails thumbnailDetails = snippet.getThumbnails();
             Thumbnail thumbnail;
-            if(thumbnailDetails.getHigh() != null) {
-                thumbnail = thumbnailDetails.getHigh();
-            } else if(thumbnailDetails.getMedium() != null) {
+//            if(thumbnailDetails.getHigh() != null) {
+//                thumbnail = thumbnailDetails.getHigh();
+//            } else
+//
+            if(thumbnailDetails.getMedium() != null) {
+                Timber.v("Med thumbnail url : " + thumbnailDetails.getMedium());
                 thumbnail = thumbnailDetails.getMedium();
             } else {
                 thumbnail = thumbnailDetails.getDefault();

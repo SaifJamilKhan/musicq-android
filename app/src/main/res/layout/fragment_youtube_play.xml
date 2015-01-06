@@ -8,26 +8,27 @@
     <TextView
         android:id="@+id/playlist_title_text_view"
         style="@style/FancyText"
-        android:padding="7dp"
-        android:layout_marginLeft="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="12dp"
+        android:layout_margin="7dp"
         android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/share_button"
         style="@style/FancyText"
-        android:layout_marginTop="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:layout_marginBottom="7dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="12dp"
+        android:layout_marginTop="7dp"
         android:background="@drawable/white_border"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:padding="7dp"
         android:textColor="@android:color/white" />
 
     <com.haystack.saifkhan.haystack.uI.ListviewSwipeRefreshLayout
@@ -51,10 +52,10 @@
         android:id="@+id/add_circle_button"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         custom:bg_color="@color/musicq_red" />

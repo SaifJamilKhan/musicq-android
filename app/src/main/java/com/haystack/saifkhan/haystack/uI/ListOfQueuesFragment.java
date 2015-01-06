@@ -126,9 +126,17 @@ public class ListOfQueuesFragment extends Fragment {
             @Override
             public void didFailWithMessage(String message) {
                 Timber.e(message);
-                stopSpinner();
-                loadPlaylistsFromDatabase();
-                mHolder.swipeRefreshLayout.setRefreshing(false);
+                Activity activity = getActivity();
+                if(activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            stopSpinner();
+                            mHolder.swipeRefreshLayout.setRefreshing(false);
+                            loadPlaylistsFromDatabase();
+                        }
+                    });
+                }
             }
         }, getActivity());
     }
