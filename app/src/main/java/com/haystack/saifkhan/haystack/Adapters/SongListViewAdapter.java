@@ -1,6 +1,7 @@
 package com.haystack.saifkhan.haystack.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,12 +76,21 @@ public class SongListViewAdapter extends BaseAdapter{
         holder.thumbnailImageView.setMinimumHeight(100);
         holder.thumbnailImageView.setMinimumWidth(500);
         holder.addSongTextview.setVisibility(mShouldEnableAdding ? View.VISIBLE : View.GONE);
+
         if(mCurrentPlayingSong != null) {
             if (i == mCurrentPlayingSong) {
-                view.setBackgroundResource(R.color.musicq_deepest_red);
-            } else {
-                view.setBackgroundResource(R.color.black);
+                    view.setBackground(mContext.getResources().getDrawable(R.drawable.red_border));
+                    holder.titleView.setTextColor(Color.parseColor("#FC2052"));
+                    holder.descriptionView.setTextColor(Color.parseColor("#888888"));
+            } else{
+                view.setBackground(null);
+                holder.titleView.setTextColor(Color.WHITE);
+                holder.descriptionView.setTextColor(Color.DKGRAY);
             }
+        } else {
+            view.setBackground(null);
+            holder.titleView.setTextColor(Color.WHITE);
+            holder.descriptionView.setTextColor(Color.DKGRAY);
         }
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
         return view;

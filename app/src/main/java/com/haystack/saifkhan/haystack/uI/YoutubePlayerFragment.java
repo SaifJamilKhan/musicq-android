@@ -138,7 +138,7 @@ public class YoutubePlayerFragment extends Fragment {
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, "Come join my playlist on the Android app MusicQ. Just enter with share pin " + mPlaylist.id);
+                intent.putExtra(Intent.EXTRA_TEXT, "Come join my playlist on the Android app MusicQ. Just join with share pin " + mPlaylist.id);
                 try
                 {
                     startActivity(Intent.createChooser(intent, "Sharing Playlist With Code " + mPlaylist.id));

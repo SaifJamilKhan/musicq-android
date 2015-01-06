@@ -9,6 +9,7 @@
         android:id="@+id/playlist_title_text_view"
         style="@style/FancyText"
         android:padding="7dp"
+        android:layout_marginLeft="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -18,13 +19,15 @@
     <Button
         android:id="@+id/share_button"
         style="@style/FancyText"
-        android:padding="7dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="12dp"
         android:background="@drawable/white_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/playlist_title_text_view"
+        android:layout_alignParentRight="true"
         android:textColor="@android:color/white" />
 
     <com.haystack.saifkhan.haystack.uI.ListviewSwipeRefreshLayout
