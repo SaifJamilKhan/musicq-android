@@ -128,8 +128,12 @@ public class MainActivity extends Activity implements YoutubePlayerFragment.Queu
 
     @Override
     public void didAddSong() {
-        mViewPager.setCurrentItem(0);
-        mYoutubePlayerFragment.scrollToBottom();
+        if(mViewPager != null) {
+            mViewPager.setCurrentItem(0);
+        }
+        if(mYoutubePlayerFragment != null) {
+            mYoutubePlayerFragment.scrollToBottom();
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
