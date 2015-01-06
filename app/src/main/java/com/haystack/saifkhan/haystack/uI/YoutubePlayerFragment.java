@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -131,6 +132,22 @@ public class YoutubePlayerFragment extends Fragment {
             }
         });
 
+        mHolder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, "Come join my playlist on the Android app MusicQ. Just enter with share pin " + mPlaylist.id);
+                try
+                {
+                    startActivity(Intent.createChooser(intent, "Sharing Playlist With Code " + mPlaylist.id));
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
 //        mHolder.songListView.setEmptyView(mHolder.emptyTextView);
 //        YoutubeTask task = new YoutubeTask();
 //        task.execute(getActivity());
@@ -239,7 +256,8 @@ public class YoutubePlayerFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mHolder.playlistTitleTextView.setText(mPlaylist.name + "    Share Code: " + mPlaylist.id);
+                    mHolder.playlistTitleTextView.setText(mPlaylist.name);
+                    mHolder.shareButton.setText("Share Code: " + mPlaylist.id);
                 }
             });
         }
@@ -647,6 +665,9 @@ public class YoutubePlayerFragment extends Fragment {
 
         @InjectView(R.id.playlist_title_text_view)
         TextView playlistTitleTextView;
+
+        @InjectView(R.id.share_button)
+        Button shareButton;
 
         @OnClick(R.id.add_circle_button)
         public void addPressed(View view) {

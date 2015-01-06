@@ -15,16 +15,17 @@
         android:layout_alignParentLeft="true"
         android:textColor="@android:color/white" />
 
-    <TextView
+    <Button
+        android:id="@+id/share_button"
         style="@style/FancyText"
         android:padding="7dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/white_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:text="Tap Video To Play"
+        android:layout_toRightOf="@id/playlist_title_text_view"
         android:textColor="@android:color/white" />
-
 
     <com.haystack.saifkhan.haystack.uI.ListviewSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
