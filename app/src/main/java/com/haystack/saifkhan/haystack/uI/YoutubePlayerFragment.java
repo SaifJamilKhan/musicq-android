@@ -277,6 +277,7 @@ public class YoutubePlayerFragment extends Fragment {
                         @Override
                         public void run() {
                             mSongAdapter.notifyDataSetChanged();
+                            mHolder.songListView.setSelection(mSongAdapter.getCount() - 1);
                             stopSpinner();
                             mHolder.emptyTextView.setVisibility(mHolder.songListView.getCount() == 0 ? View.VISIBLE : View.GONE);
                         }
