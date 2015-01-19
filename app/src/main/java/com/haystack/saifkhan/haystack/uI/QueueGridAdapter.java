@@ -17,6 +17,8 @@ import com.haystack.saifkhan.haystack.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,6 +40,7 @@ public class QueueGridAdapter extends BaseAdapter{
 
     public void setQueues(ArrayList<MusicQPlayList> queues) {
         mQueues = queues;
+        sortPlaylists();
     }
     @Override
     public int getCount() {
@@ -75,12 +78,28 @@ public class QueueGridAdapter extends BaseAdapter{
         if(!TextUtils.isEmpty(thumbnailURL)) {
             Picasso.with(mActivity).load(thumbnailURL).into(holder.playlistImageView);
         } else {
-//            holder.playlistImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.logo));
+            holder.playlistImageView.setImageDrawable(null);
         }
+
         holder.playlistImageView.setColorFilter(Color.argb(12, 12, 12, 12));
         return view;
     }
 
+    public static class PlaylistComparator implements Comparator<MusicQPlayList>
+    {
+        public int compare(MusicQPlayList left, MusicQPlayList right) {
+            if(left == null || left.id == null || right == null || right.id == null) {
+                return 0;
+            }
+            return Integer.valueOf(right.id).compareTo(Integer.valueOf(left.id));
+        }
+    }
+
+    private void sortPlaylists() {
+        if(mQueues != null) {
+            Collections.sort(mQueues, new PlaylistComparator());
+        }
+    }
     public static class PlaylistViewHolder {
         @InjectView(R.id.title_text_view)
         TextView titleView;

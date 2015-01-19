@@ -2,6 +2,7 @@ package com.haystack.saifkhan.haystack.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,13 @@ import com.haystack.saifkhan.haystack.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * Created by SaifKhan on 2014-11-08.
@@ -29,10 +34,6 @@ public class SongListViewAdapter extends BaseAdapter{
     private ArrayList<MusicQSong> mSongs;
     private LayoutInflater mLayoutInflater;
     private Integer mCurrentPlayingSong;
-
-    public void setSongs(ArrayList<MusicQSong> songs) {
-        mSongs = songs;
-    }
 
     public SongListViewAdapter(LayoutInflater inflater, Context context, boolean shouldEnableAdding) {
         mSongs = new ArrayList<MusicQSong>();
@@ -94,6 +95,27 @@ public class SongListViewAdapter extends BaseAdapter{
         }
         Picasso.with(mContext).load(song.getThumbnailURL()).into(holder.thumbnailImageView);
         return view;
+    }
+
+    public static class SongComparator implements Comparator<MusicQSong>
+    {
+        public int compare(MusicQSong left, MusicQSong right) {
+            if(left == null || left.id == null || right == null || right.id == null) {
+                return 0;
+            }
+            return Integer.valueOf(left.id).compareTo(Integer.valueOf(right.id));
+        }
+    }
+
+    public void setSongs(ArrayList<MusicQSong> songs) {
+        mSongs = songs;
+        sortSongs();
+    }
+
+    private void sortSongs() {
+        if(mSongs != null) {
+            Collections.sort(mSongs, new SongComparator());
+        }
     }
 
     public void setCurrentQueItem(Integer i) {

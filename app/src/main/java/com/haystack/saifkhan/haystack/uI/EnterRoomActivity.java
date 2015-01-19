@@ -266,6 +266,10 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
         mQueuesAdapter = new QueueShowcasePagerAdapter(getFragmentManager(), EnterRoomActivity.this);
         pager.setAdapter(mQueuesAdapter);
 
+//        setupTabs();
+    }
+
+    private void setupTabs() {
         final ActionBar actionBar = getActionBar();
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {

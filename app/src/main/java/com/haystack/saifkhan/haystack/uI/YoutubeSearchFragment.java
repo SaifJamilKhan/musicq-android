@@ -101,6 +101,7 @@ public class YoutubeSearchFragment extends Fragment {
                     return;
                 }
                 MusicQSong song = (MusicQSong) mSongAdapter.getItem(i);
+                song.id = "" + Integer.MAX_VALUE;
                 addSong(song);
                 View cellView = mHolder.youtubeListView.getChildAt(i - mHolder.youtubeListView.getFirstVisiblePosition());
                 if (cellView != null) {
