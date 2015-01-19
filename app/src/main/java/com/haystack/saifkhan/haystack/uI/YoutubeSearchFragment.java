@@ -149,7 +149,7 @@ public class YoutubeSearchFragment extends Fragment {
                     final MusicQSong musicQSong = gson.fromJson(body.getJSONObject("video").toString(), MusicQSong.class);
                     if(!TextUtils.isEmpty(musicQSong.id) && !TextUtils.isEmpty(musicQSong.playlistID)) {
                         MusicQPlayList playList = (MusicQPlayList) DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class).get(musicQSong.playlistID);
-                        if(playList.songs == null || playList.songs.size() == 0 || !playList.songs.get(playList.songs.size() -1).id.equals(musicQSong.getId())) {
+                        if(playList != null && (playList.songs == null || playList.songs.size() == 0 || !playList.songs.get(playList.songs.size() -1).id.equals(musicQSong.getId()))) {
                             if(playList.songs == null) {
                                 playList.songs = new ArrayList<MusicQSong>();
                             }

@@ -135,15 +135,16 @@ public class YoutubePlayerFragment extends Fragment {
         mHolder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, "Come join my playlist on the Android app MusicQ. Just join with share pin " + mPlaylist.id);
-                try
-                {
-                    startActivity(Intent.createChooser(intent, "Sharing Playlist With Code " + mPlaylist.id));
-                } catch (Exception e) {
+                if(mPlaylist != null) {
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, "Come join my playlist on the Android app MusicQ. Just join with share pin " + mPlaylist.id);
+                    try {
+                        startActivity(Intent.createChooser(intent, "Sharing Playlist With Code " + mPlaylist.id));
+                    } catch (Exception e) {
 
+                    }
                 }
             }
         });
