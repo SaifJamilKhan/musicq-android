@@ -185,7 +185,7 @@ public class ListOfQueuesFragment extends Fragment {
                 }
             }
         }
-        if ((playlists != null && playlists.size() > 0) && mHolder.gridView.getChildCount() != playlists.size()) {
+        if (playlists != null && playlists.size() > 0) {
             mQueuesAdapter.setQueues(new ArrayList<MusicQPlayList>(playlists.values()));
             mQueuesAdapter.notifyDataSetChanged();
         }

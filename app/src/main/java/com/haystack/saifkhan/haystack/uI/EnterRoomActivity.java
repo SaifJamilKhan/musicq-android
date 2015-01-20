@@ -167,6 +167,8 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
 
         private void hideSelf() {
             view.setVisibility(View.GONE);
+            newQueueNameTextView.setText("");
+            joinQueueTextView.setText("");
             activity.circleFABButton.rotateBackward();
         }
 
