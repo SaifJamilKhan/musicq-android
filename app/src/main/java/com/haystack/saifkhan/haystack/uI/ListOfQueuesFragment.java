@@ -56,7 +56,10 @@ public class ListOfQueuesFragment extends Fragment {
         mQueuesAdapter = new QueueGridAdapter(getActivity().getLayoutInflater(), getActivity());
         mHolder.gridView.setAdapter(mQueuesAdapter);
         setEmptyView();
-        startSpinner();
+        loadPlaylistsFromDatabase();
+        if(mQueuesAdapter.getCount() == 0) {
+            startSpinner();
+        }
         getAllPlaylistsFromNetwork();
         mHolder.swipeRefreshLayout.setColorSchemeResources(
                 R.color.refresh_progress_1,
@@ -178,7 +181,7 @@ public class ListOfQueuesFragment extends Fragment {
                     playlists = DatabaseManager.getDatabaseManager().getHashmapForClass(MusicQPlayList.class);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Timber.v(e.getMessage() + "saif");
+                    Timber.v(e.getMessage());
                 }
             }
         }

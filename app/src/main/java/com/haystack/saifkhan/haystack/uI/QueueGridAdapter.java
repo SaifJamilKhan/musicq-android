@@ -72,7 +72,7 @@ public class QueueGridAdapter extends BaseAdapter{
         holder.titleView.setText(playlist.name);
         String thumbnailURL = "";
         if(playlist.songs != null && playlist.songs.size() > 0) {
-            MusicQSong latestSong = playlist.songs.get(playlist.songs.size() -1);
+            MusicQSong latestSong = playlist.songs.get(0);
             thumbnailURL = latestSong.thumbnailURL;
         }
         if(!TextUtils.isEmpty(thumbnailURL)) {

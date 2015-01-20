@@ -10,7 +10,7 @@
 
         <ImageView
             android:id="@+id/image_view"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:minHeight="120dp"/>

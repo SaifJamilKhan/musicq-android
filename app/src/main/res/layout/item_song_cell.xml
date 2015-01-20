@@ -20,11 +20,12 @@
         android:textSize="40dp"
         android:layout_margin="10dp"/>
 
+    <!--4 by 3-->
     <ImageView
         android:id="@+id/thumbnailImageView"
         android:layout_toRightOf="@id/addSongButton"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
+        android:layout_width="132dp"
+        android:layout_height="100dp"
         android:layout_gravity="center" />
 
     <LinearLayout
