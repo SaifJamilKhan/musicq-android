@@ -120,6 +120,7 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
     public static class EnterQueueViewHolder {
 
         private final EnterRoomActivity activity;
+        private final View view;
 
         @InjectView(R.id.new_queue_btn)
         Button newQueueButton;
@@ -127,6 +128,7 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
         @OnClick(R.id.new_queue_action_btn)
         public void newQueueButtonPressed() {
             activity.createPlaylistWithName(newQueueNameTextView.getText().toString());
+            hideSelf();
         }
 
         @InjectView(R.id.join_queue_btn)
@@ -135,6 +137,7 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
         @OnClick(R.id.join_queue_action_btn)
         public void setJoinQueueButtonPressed() {
             activity.joinPlaylistWithID(joinQueueTextView.getText().toString());
+            hideSelf();
         }
 
         @InjectView(R.id.new_queue_text_view)
@@ -162,8 +165,14 @@ public class EnterRoomActivity extends Activity implements ListOfQueuesFragment.
             ViewUtils.hideKeyboardFromTextview(joinQueueTextView, activity);
         }
 
+        private void hideSelf() {
+            view.setVisibility(View.GONE);
+            activity.circleFABButton.rotateBackward();
+        }
+
         public EnterQueueViewHolder(View view, EnterRoomActivity referenceContext){
             ButterKnife.inject(this, view);
+            this.view = view;
             this.activity = referenceContext;
             viewFlipper.setInAnimation(AnimationUtils.loadAnimation(activity,
                     R.anim.fade_in));
